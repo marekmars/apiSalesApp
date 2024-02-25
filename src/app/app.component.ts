@@ -1,14 +1,22 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { initFlowbite } from 'flowbite';
+
+import { LayoutComponent } from "./layout/layout.component";
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [CommonModule, RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'],
+  standalone: true,
+  imports: [CommonModule, RouterOutlet,  LayoutComponent]
 })
-export class AppComponent {
-  title = 'salesApp';
+export class AppComponent implements OnInit {
+  title = 'web-app';
+
+  ngOnInit(): void {
+    initFlowbite();
+  }
 }
