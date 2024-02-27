@@ -15,7 +15,6 @@ import { LayoutComponent } from "./layout/layout.component";
 })
 export class AppComponent implements OnInit {
   title = 'web-app';
-
   ngOnInit(): void {
     initFlowbite();
   }

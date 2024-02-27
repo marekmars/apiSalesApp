@@ -1,0 +1,122 @@
+<nav aria-label="Page navigation example" class="mt-4 flex justify-center w-full flex-wrap gap-5 ">
+  <ul class="flex items-center -space-x-px h-10 text-base" [ngClass]="{'hidden': totalItems <= itemsPerPage}">
+    <li>
+      <a [ngClass]="{
+          'cursor-not-allowed': currentPage === 1,
+          'pointer-events-none': currentPage === 1,
+          'opacity-50 ': currentPage === 1,
+          'cursor-pointer': currentPage !== 1
+        }" (click)="navigateToFirstPage()"
+        class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <span class=" sr-only">First</span>
+        <svg class="w-6 h-6 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="m17 16-4-4 4-4m-6 8-4-4 4-4" />
+        </svg>
+      </a>
+    </li>
+    <li>
+      <a [ngClass]="{
+          'cursor-not-allowed': currentPage === 1,
+          'pointer-events-none': currentPage === 1,
+          'opacity-50 ': currentPage === 1,
+          'cursor-pointer': currentPage !== 1
+        }" (click)="navigateToPreviousPage()"
+        class="cursor-pointer flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        <span class="sr-only">Previous</span>
+        <svg class="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 6 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M5 1 1 5l4 4" />
+        </svg>
+      </a>
+    </li>
+    @if (totalItems/itemsPerPage>5) {
+
+    @for (item of pageRange; track item;let i = $index; let last=$last){
+    <li>
+      <a [id]="item"
+        class="flex cursor-pointer items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        (click)="navigateToPage(item)" [ngClass]="{'active': item === currentPage}">
+        {{item}}
+      </a>
+    </li>
+    }
+
+    }@else {
+
+    @for (page of pageNumbers; track page;let i = $index; let last=$last){
+    <li class="hidden sm:block">
+      <a [id]="page"
+        class="flex cursor-pointer items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        (click)="navigateToPage(page)" [ngClass]="{'active': page === currentPage}">
+        {{page}}
+      </a>
+    </li>
+    }}
+
+    <li>
+      <a (click)="navigateToNextPage()" [ngClass]="{
+          'cursor-not-allowed': currentPage === totalItems / itemsPerPage,
+          'pointer-events-none': currentPage === totalItems / itemsPerPage,
+          'opacity-50 ': currentPage === totalItems / itemsPerPage,
+          'cursor-pointer': currentPage !== totalItems / itemsPerPage
+        }"
+        class="cursor-pointer flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300   hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        <span class="sr-only">Next</span>
+        <svg class="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 6 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="m1 9 4-4-4-4" />
+        </svg></a>
+    </li>
+    <li class="">
+      <a [ngClass]="{
+          'cursor-not-allowed': currentPage === totalItems / itemsPerPage,
+          'pointer-events-none': currentPage === totalItems / itemsPerPage,
+          'opacity-50 ': currentPage === totalItems / itemsPerPage,
+          'cursor-pointer': currentPage !== totalItems / itemsPerPage
+        }" (click)="navigateToLastPage()"
+        class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+
+        <span class="sr-only">Last</span>
+        <svg class="w-6 h-6 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="m7 16 4-4-4-4m6 8 4-4-4-4" />
+        </svg>
+      </a>
+    </li>
+  </ul>
+  <div class="flex flex-col w-fit items-center">
+
+    <!-- <button id="dropdownDefaultButton" (click)="toggleDropdown()"
+      class="font-medium rounded-lg text-sm px-5 py-2.5  w-20 h-10 text-center inline-flex items-center text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800"
+      type="button">{{ itemsPerPage }}
+      <svg class="w-2.5 h-2.5 ms-3 my-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+        viewBox="0 0 10 6">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+      </svg>
+    </button> -->
+    <form class="max-w-sm mx-auto">
+      <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        @for (item of rowsPerPageOptions; track item) {
+          <option selected (change)="selectItemsPerPage(item)" value="{{item}}" class=" h-10" >{{item}}</option>
+          }
+      </select>
+    </form>
+    <!-- Dropdown menu -->
+    <div id="dropdown" #dropdown [ngClass]="{ 'collapse': !isDropdownOpen }"
+    class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 fixed">
+    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+      @for (item of rowsPerPageOptions; track item) {
+      <li>
+        <a (click)="selectItemsPerPage(item)"
+          class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">{{item}}</a>
+      </li>
+      }
+    </ul>
+  </div>
+  </div>
+
+</nav>
