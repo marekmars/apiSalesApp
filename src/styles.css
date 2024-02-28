@@ -10,7 +10,29 @@ body {
   @apply text-gray-900 dark:text-gray-100;
   margin: 0;
   padding: 0;
-color: whitesmoke;
+  color: whitesmoke;
+}
+
+.simplebar-scrollbar::before {
+  background-color: #4c822a;
+  opacity: 1 !important;
 }
 
 
+
+html::-webkit-scrollbar {
+  width: 0.8vw;
+}
+html::-webkit-scrollbar-track {
+  background-color: #1f2937 !important;
+}
+html::-webkit-scrollbar-thumb {
+  background-color: #4c822a62;
+  opacity: 0.1 !important;
+  border-radius: 0.5rem;
+}
+html::-webkit-scrollbar-thumb:hover {
+  background-color: #4c822a;
+  opacity: 0.1 !important;
+  border-radius: 0.5rem;
+}

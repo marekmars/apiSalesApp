@@ -1,1 +1,86 @@
-<shared-table></shared-table>
+@if (tableItems.length>0) {
+
+<div data-simplebar data-simplebar-auto-hide="false" class="relative overflow-x-auto shadow-md sm:rounded-lg pb-2 ">
+  <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        @for (header of headers; track header) {
+        <th scope="col" class="px-6 py-3 ">
+          <div class="text-center">
+            {{header}}
+          </div>
+        </th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of tableItems; track i; let i = $index) {
+      <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+        <td class="px-6 py-4 text-center">
+          {{item.id}}
+        </td>
+        <td class="px-6 py-4 text-center">
+          {{item.idClient}}
+        </td>
+        <td class="px-6 py-4 text-center">
+          {{item.date | date: 'dd/MM/yyyy'}}
+        </td>
+        <td class="px-6 py-4 text-center">
+          {{item.total}}
+        </td>
+        <td class="px-6 py-4 text-center">
+          <div class="flex items-center justify-center min-w-min">
+            <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2 my-auto"></div>{{item.state | statePipe}}
+          </div>
+        </td>
+        <td class="px-6 py-4 text-right flex justify-center h-max">
+          <div class="flex gap-6 sm:gap-8">
+            <a [id]="item.id" (click)="onActionClick({action: 'delete', value: item.id}  )" class="cursor-pointer">
+              <svg class="w-6 h-6 m-auto text-gray-800 dark:text-white" aria-hidden="true" #deleteButton
+                xmlns="http://www.w3.org/2000/svg" fill="#A23426" viewBox="0 0 24 24">
+                <path fill-rule="evenodd"
+                  d="M8.6 2.6A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4c0-.5.2-1 .6-1.4ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
+                  clip-rule="evenodd" />
+              </svg>
+            </a>
+            <a>
+              <svg class="w-6 h-6 m-auto text-gray-800 dark:text-white" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" fill="#596CB3" viewBox="0 0 24 24">
+                <path fill-rule="evenodd"
+                  d="M11.3 6.2H5a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h11c1.1 0 2-1 2-2.1V11l-4 4.2c-.3.3-.7.6-1.2.7l-2.7.6c-1.7.3-3.3-1.3-3-3.1l.6-2.9c.1-.5.4-1 .7-1.3l3-3.1Z"
+                  clip-rule="evenodd" />
+                <path fill-rule="evenodd"
+                  d="M19.8 4.3a2.1 2.1 0 0 0-1-1.1 2 2 0 0 0-2.2.4l-.6.6 2.9 3 .5-.6a2.1 2.1 0 0 0 .6-1.5c0-.2 0-.5-.2-.8Zm-2.4 4.4-2.8-3-4.8 5-.1.3-.7 3c0 .3.3.7.6.6l2.7-.6.3-.1 4.7-5Z"
+                  clip-rule="evenodd" />
+              </svg>
+            </a>
+
+            <a [href]="item">
+              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                fill="#ABB359" viewBox="0 0 24 24">
+                <path fill-rule="evenodd"
+                  d="M5 7.8C6.7 6.3 9.2 5 12 5s5.3 1.3 7 2.8a12.7 12.7 0 0 1 2.7 3.2c.2.2.3.6.3 1s-.1.8-.3 1a2 2 0 0 1-.6 1 12.7 12.7 0 0 1-9.1 5c-2.8 0-5.3-1.3-7-2.8A12.7 12.7 0 0 1 2.3 13c-.2-.2-.3-.6-.3-1s.1-.8.3-1c.1-.4.3-.7.6-1 .5-.7 1.2-1.5 2.1-2.2Zm7 7.2a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                  clip-rule="evenodd" />
+              </svg>
+            </a>
+          </div>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+
+
+</div>
+<shared-paginator [totalItems]="totalItems" [rowsPerPageOptions]="itemsPerPageOptions"></shared-paginator>
+<shared-alert [show]="isAlertOn" (close)="onAlertClosed()"></shared-alert>
+<shared-dialog [showModal]="show" [iconScr]="'/assets/warning.svg'" [title]="'Delete Element'"
+  [description]="'Are you sure you want to delete this element?'" [okBtnTxt]="'Yes, delete it'"
+  [cancelBtnTxt]="'Cancel'" [cancelBtn]="true" (valueOutput)="doAction($event)"></shared-dialog>
+}@else {
+<!-- <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
+  role="alert">
+  <span class="font-medium">Warning alert!</span> There are no elements to show in the table.
+</div> -->
+<shared-skeleton-table></shared-skeleton-table>
+}

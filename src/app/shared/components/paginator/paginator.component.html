@@ -16,6 +16,7 @@
         </svg>
       </a>
     </li>
+
     <li>
       <a [ngClass]="{
           'cursor-not-allowed': currentPage === 1,
@@ -32,7 +33,8 @@
         </svg>
       </a>
     </li>
-    @if (totalItems/itemsPerPage>5) {
+
+    @if (maxPages>5) {
 
     @for (item of pageRange; track item;let i = $index; let last=$last){
     <li>
@@ -58,10 +60,10 @@
 
     <li>
       <a (click)="navigateToNextPage()" [ngClass]="{
-          'cursor-not-allowed': currentPage === totalItems / itemsPerPage,
-          'pointer-events-none': currentPage === totalItems / itemsPerPage,
-          'opacity-50 ': currentPage === totalItems / itemsPerPage,
-          'cursor-pointer': currentPage !== totalItems / itemsPerPage
+          'cursor-not-allowed': currentPage === maxPages,
+          'pointer-events-none': currentPage === maxPages,
+          'opacity-50 ': currentPage === maxPages,
+          'cursor-pointer': currentPage !== maxPages
         }"
         class="cursor-pointer flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300   hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
         <span class="sr-only">Next</span>
@@ -73,10 +75,10 @@
     </li>
     <li class="">
       <a [ngClass]="{
-          'cursor-not-allowed': currentPage === totalItems / itemsPerPage,
-          'pointer-events-none': currentPage === totalItems / itemsPerPage,
-          'opacity-50 ': currentPage === totalItems / itemsPerPage,
-          'cursor-pointer': currentPage !== totalItems / itemsPerPage
+          'cursor-not-allowed': currentPage === maxPages,
+          'pointer-events-none': currentPage === maxPages,
+          'opacity-50 ': currentPage === maxPages,
+          'cursor-pointer': currentPage !== maxPages
         }" (click)="navigateToLastPage()"
         class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
 
@@ -88,35 +90,17 @@
       </a>
     </li>
   </ul>
-  <div class="flex flex-col w-fit items-center">
 
-    <!-- <button id="dropdownDefaultButton" (click)="toggleDropdown()"
-      class="font-medium rounded-lg text-sm px-5 py-2.5  w-20 h-10 text-center inline-flex items-center text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800"
-      type="button">{{ itemsPerPage }}
-      <svg class="w-2.5 h-2.5 ms-3 my-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-        viewBox="0 0 10 6">
-        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
-      </svg>
-    </button> -->
-    <form class="max-w-sm mx-auto">
-      <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-        @for (item of rowsPerPageOptions; track item) {
-          <option selected (change)="selectItemsPerPage(item)" value="{{item}}" class=" h-10" >{{item}}</option>
-          }
+  <div class="flex flex-col w-fit items-center">
+    <form class="max-w-sm mx-auto" [formGroup]="itemsXPageForms">
+      <select formControlName="itemsXPage" (change)="setItemsPerPage()"
+        class=" bg-gray-50 border border-gray-300 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-00 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        
+        @for (item of rowsPerPageOptions; track item;let f=$first) {
+        <option value="{{item}}" class="text-gray-300" >{{item}}</option>
+        }
       </select>
     </form>
-    <!-- Dropdown menu -->
-    <div id="dropdown" #dropdown [ngClass]="{ 'collapse': !isDropdownOpen }"
-    class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 fixed">
-    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-      @for (item of rowsPerPageOptions; track item) {
-      <li>
-        <a (click)="selectItemsPerPage(item)"
-          class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">{{item}}</a>
-      </li>
-      }
-    </ul>
-  </div>
   </div>
 
 </nav>
