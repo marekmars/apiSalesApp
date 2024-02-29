@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { initFlowbite } from 'flowbite';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { PaginatorService } from './services/paginator.service';
 import { LayoutComponent } from '../../../layout/layout.component';
 
@@ -16,10 +16,12 @@ import { LayoutComponent } from '../../../layout/layout.component';
   styleUrl: './paginator.component.css'
 })
 export class PaginatorComponent implements OnInit {
-  private paginatorService: PaginatorService = inject(PaginatorService);
+  private _paginatorService: PaginatorService = inject(PaginatorService);
 
   @Input() public totalItems: number = 0;
   @Input() public rowsPerPageOptions: number[] = [];
+
+  private _currentPageSubscription!: Subscription
 
   public isDropdownOpen: boolean = false;
   public itemsPerPage: number = 0;
@@ -40,18 +42,20 @@ export class PaginatorComponent implements OnInit {
   ngOnInit(): void {
     initFlowbite();
     this.itemsPerPage = this.rowsPerPageOptions[0];
-    this.paginatorService.setPageSelector(this.itemsPerPage);
+
     this.itemsXPageForms = new FormGroup({
       itemsXPage: new FormControl(this.itemsPerPage),
     })
+    this._currentPageSubscription = this._paginatorService.currentPage$.subscribe(
+      (page) => {
+        this.currentPage = page
+      }
+    );
+    // this._paginatorService.setPageSelector(this.itemsPerPage);
     // this.itemsPerPageEmiter.emit(this.itemsPerPage);
   }
 
-  selectItemsPerPage(items: number) {
-    this.itemsPerPage = items;
-    // this.itemsPerPageEmiter.emit(this.itemsPerPage);
-    this.isDropdownOpen = false;
-  }
+
   navigateToNextPage() {
     let pageNumber = this.currentPage + 1;
 
@@ -61,12 +65,10 @@ export class PaginatorComponent implements OnInit {
     const newPageRange = Array.from({ length: 5 }, (_, i) => this.currentPage + i);
     this.pageRange = this.ensureValidPageRange(newPageRange, this.maxPages);
     this.currentPage = pageNumber;
-    this.paginatorService.setCurrentPage(this.currentPage);
+    this._paginatorService.setCurrentPage(this.currentPage);
     // this.currentPageEmiter.emit(this.currentPage);
 
   }
-
-
   navigateToPreviousPage() {
     let pageNumber = this.currentPage - 1;
     if (pageNumber < 1) {
@@ -75,13 +77,13 @@ export class PaginatorComponent implements OnInit {
     const newPageRange = Array.from({ length: 5 }, (_, i) => pageNumber - i).reverse();
     this.pageRange = this.ensureValidPageRange(newPageRange, this.maxPages);
     this.currentPage = pageNumber;
-    this.paginatorService.setCurrentPage(this.currentPage);
+    this._paginatorService.setCurrentPage(this.currentPage);
     // this.currentPageEmiter.emit(this.currentPage);
   }
 
   navigateToFirstPage() {
     this.currentPage = 1
-    this.paginatorService.setCurrentPage(this.currentPage);
+    this._paginatorService.setCurrentPage(this.currentPage);
     // this.currentPageEmiter.emit(this.currentPage);
     const newPageRange = Array.from({ length: 5 }, (_, i) => this.currentPage + i);
     this.pageRange = this.ensureValidPageRange(newPageRange, this.maxPages);
@@ -90,7 +92,7 @@ export class PaginatorComponent implements OnInit {
 
   navigateToLastPage() {
     this.currentPage = Math.ceil(this.totalItems / this.itemsPerPage)
-    this.paginatorService.setCurrentPage(this.currentPage);
+    this._paginatorService.setCurrentPage(this.currentPage);
     // this.currentPageEmiter.emit(this.currentPage);
     const newPageRange = Array.from({ length: 5 }, (_, i) => this.currentPage + i);
     this.pageRange = this.ensureValidPageRange(newPageRange, this.maxPages);
@@ -99,7 +101,7 @@ export class PaginatorComponent implements OnInit {
 
   navigateToPage(pageNumber: number) {
     this.currentPage = pageNumber;
-    this.paginatorService.setCurrentPage(this.currentPage);
+    this._paginatorService.setCurrentPage(this.currentPage);
     // this.currentPageEmiter.emit(this.currentPage);
     if (pageNumber - 1 === this.pageRange[0] || pageNumber + 1 === this.pageRange[4]) {
       return;
@@ -137,12 +139,12 @@ export class PaginatorComponent implements OnInit {
 
   setItemsPerPage() {
     this.currentPage = 1;
-    this.paginatorService.setCurrentPage(this.currentPage);
+    // this._paginatorService.setCurrentPage(this.currentPage);
     // this.currentPageEmiter.emit(this.currentPage);
     this.itemsPerPage = this.itemsXPageForms.value.itemsXPage;
-    this.paginatorService.setPageSelector(this.itemsPerPage);
+    this._paginatorService.setPageSelector(this.itemsPerPage);
     this.pageRange = [1, 2, 3, 4, 5]
     // this.itemsPerPageEmiter.emit(this.itemsPerPage);
-    console.log("items per page: " + this.itemsPerPage);
+
   }
 }

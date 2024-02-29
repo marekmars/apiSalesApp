@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { initFlowbite } from 'flowbite';
+import { ActionValue } from '../../interfaces/action-values.interfaces';
 
 @Component({
   selector: 'shared-dialog',
@@ -10,7 +11,6 @@ import { initFlowbite } from 'flowbite';
   styleUrl: './dialog.component.css'
 })
 export class DialogComponent {
-
   @Input() public showModal: boolean = false;
   @Input() public iconScr: string = '';
   @Input() public title: string = '';
@@ -19,11 +19,11 @@ export class DialogComponent {
   @Input() public cancelBtnTxt: string = 'Cancel';
   @Input() public cancelBtn: boolean = false;
   @Input() public timmerValue: number = 0;
+  @Input() public actionValue!:ActionValue<any>;
   // @Input() public numberValue: number = 0;
   // @Input() public booleanValue: boolean = false;
   // @Input() public txtValue: string = '';
-  @Output() public valueOutput = new EventEmitter<boolean>;
-
+  @Output() public valueOutput = new EventEmitter<ActionValue<any>>;
 
   ngOnInit(): void {
     initFlowbite();
@@ -32,6 +32,7 @@ export class DialogComponent {
         this.closeModal();
       }, this.timmerValue);
     }
+
   }
   onOverlayClick(event: Event): void {
     // Verifica si el clic proviene del fondo de superposición y cierra el modal
@@ -45,11 +46,12 @@ export class DialogComponent {
 
   closeModal() {
     this.showModal = false;
-    this.valueOutput.emit(false);
+    this.valueOutput.emit({ value: false, item: null, action: '' });
   }
   showValue() {
     this.showModal = false;
-    this.valueOutput.emit(true);
+
+    this.valueOutput.emit({ value: true, item: this.actionValue?.item, action: this.actionValue?.action });
 
   }
 

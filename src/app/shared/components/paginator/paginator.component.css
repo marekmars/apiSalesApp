@@ -1,5 +1,8 @@
 .active {
   background: #374151 !important;
   color: #ffffff;
+  cursor:not-allowed;
+  cursor: default;
+  pointer-events: none;
 }
 

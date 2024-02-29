@@ -9,17 +9,13 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './alert.component.css'
 })
 export class AlertComponent {
-  @Input() public show = false;
-  @Output() public close = new EventEmitter<void>();
+
+  @Input() public show: boolean = false;
+  @Input() public textValue: string = '';
+  @Input() public warning?: boolean = false;
+  @Input() public success?: boolean = false;
+  @Input() public error?: boolean = false;
   closeAlert(): void {
     this.show = false;
-  }
-
-  destroy(): void {
-    this.close.emit();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy();
   }
 }

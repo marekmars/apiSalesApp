@@ -1,16 +1,55 @@
-@if (tableItems.length>0) {
+<a type="button" [routerLink]="['/sales/add']"
+  class="cursor-pointer text-white w-fit flex gap-2  bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-4 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+  <span class="my-auto">Add </span>
+  <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+    fill="currentColor" viewBox="0 0 24 24">
+    <path fill-rule="evenodd"
+      d="M2 12a10 10 0 1 1 20 0 10 10 0 0 1-20 0Zm11-4.2a1 1 0 1 0-2 0V11H7.8a1 1 0 1 0 0 2H11v3.2a1 1 0 1 0 2 0V13h3.2a1 1 0 1 0 0-2H13V7.8Z"
+      clip-rule="evenodd" />
+  </svg>
 
-<div data-simplebar data-simplebar-auto-hide="false" class="relative overflow-x-auto shadow-md sm:rounded-lg pb-2 ">
+</a>
+<div class="flex flex-column gap-4 sm:flex-row flex-wrap  items-center content-center justify-between pb-5"
+  [ngClass]="{'hidden': tableItems.length === 0}">
+  <shared-search-bar> </shared-search-bar>
+  <shared-sort-by [sortBy]="sortBy"> </shared-sort-by>
+</div>
+@if (!itemsEmpty) {
+@if (loading) {
+<shared-skeleton-table></shared-skeleton-table>
+}@else {
+<div data-simplebar data-simplebar-auto-hide="false" class="relative overflow-x-auto shadow-md sm:rounded-lg pb-2 z-10">
   <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
       <tr>
-        @for (header of headers; track header) {
         <th scope="col" class="px-6 py-3 ">
-          <div class="text-center">
-            {{header}}
+          <div class="text-center flex justify-center content-center">
+            <span> Id</span>
           </div>
         </th>
-        }
+        <th scope="col" class="px-6 py-3 ">
+          <div class="text-center flex justify-center content-center">
+            <span> Client</span>
+
+          </div>
+        </th>
+        <th scope="col" class="px-6 py-3 ">
+          <div class="text-center flex justify-center content-center">
+            <span> Date</span>
+
+          </div>
+        </th>
+        <th scope="col" class="px-6 py-3 ">
+          <div class="text-center flex justify-center content-center">
+            <span> Total</span>
+
+          </div>
+        </th>
+        <th scope="col" class="px-6 py-3 ">
+          <div class="text-center flex justify-center content-center">
+            <span> Actions</span>
+          </div>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -20,7 +59,7 @@
           {{item.id}}
         </td>
         <td class="px-6 py-4 text-center">
-          {{item.idClient}}
+          {{item.client?.lastName+" "+item.client?.name}}
         </td>
         <td class="px-6 py-4 text-center">
           {{item.date | date: 'dd/MM/yyyy'}}
@@ -28,14 +67,10 @@
         <td class="px-6 py-4 text-center">
           {{item.total}}
         </td>
-        <td class="px-6 py-4 text-center">
-          <div class="flex items-center justify-center min-w-min">
-            <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2 my-auto"></div>{{item.state | statePipe}}
-          </div>
-        </td>
+
         <td class="px-6 py-4 text-right flex justify-center h-max">
           <div class="flex gap-6 sm:gap-8">
-            <a [id]="item.id" (click)="onActionClick({action: 'delete', value: item.id}  )" class="cursor-pointer">
+            <a [id]="item.id" (click)="onActionClick({ action: 'delete',  item: item })" class="cursor-pointer">
               <svg class="w-6 h-6 m-auto text-gray-800 dark:text-white" aria-hidden="true" #deleteButton
                 xmlns="http://www.w3.org/2000/svg" fill="#A23426" viewBox="0 0 24 24">
                 <path fill-rule="evenodd"
@@ -43,19 +78,9 @@
                   clip-rule="evenodd" />
               </svg>
             </a>
-            <a>
-              <svg class="w-6 h-6 m-auto text-gray-800 dark:text-white" aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg" fill="#596CB3" viewBox="0 0 24 24">
-                <path fill-rule="evenodd"
-                  d="M11.3 6.2H5a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h11c1.1 0 2-1 2-2.1V11l-4 4.2c-.3.3-.7.6-1.2.7l-2.7.6c-1.7.3-3.3-1.3-3-3.1l.6-2.9c.1-.5.4-1 .7-1.3l3-3.1Z"
-                  clip-rule="evenodd" />
-                <path fill-rule="evenodd"
-                  d="M19.8 4.3a2.1 2.1 0 0 0-1-1.1 2 2 0 0 0-2.2.4l-.6.6 2.9 3 .5-.6a2.1 2.1 0 0 0 .6-1.5c0-.2 0-.5-.2-.8Zm-2.4 4.4-2.8-3-4.8 5-.1.3-.7 3c0 .3.3.7.6.6l2.7-.6.3-.1 4.7-5Z"
-                  clip-rule="evenodd" />
-              </svg>
-            </a>
 
-            <a [href]="item">
+
+            <a [routerLink]="['/sales/detail/'+item.id]">
               <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                 fill="#ABB359" viewBox="0 0 24 24">
                 <path fill-rule="evenodd"
@@ -69,18 +94,22 @@
       }
     </tbody>
   </table>
-
-
 </div>
 <shared-paginator [totalItems]="totalItems" [rowsPerPageOptions]="itemsPerPageOptions"></shared-paginator>
-<shared-alert [show]="isAlertOn" (close)="onAlertClosed()"></shared-alert>
-<shared-dialog [showModal]="show" [iconScr]="'/assets/warning.svg'" [title]="'Delete Element'"
-  [description]="'Are you sure you want to delete this element?'" [okBtnTxt]="'Yes, delete it'"
-  [cancelBtnTxt]="'Cancel'" [cancelBtn]="true" (valueOutput)="doAction($event)"></shared-dialog>
+
+}
 }@else {
-<!-- <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
+<div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
   role="alert">
   <span class="font-medium">Warning alert!</span> There are no elements to show in the table.
-</div> -->
-<shared-skeleton-table></shared-skeleton-table>
+</div>
 }
+
+  <shared-alert [show]="show" [success]="true"  textValue="Sale deleted successfully"></shared-alert>
+
+
+
+<shared-dialog [showModal]="showModal" [iconScr]="'/assets/warning.svg'" [title]="'Delete Element'"
+  [description]="'Are you sure you want to delete this element?'" [okBtnTxt]="'Yes, delete it'"
+  [cancelBtnTxt]="'Cancel'" [actionValue]="actionValue" [cancelBtn]="true"
+  (valueOutput)="doAction($event)"></shared-dialog>

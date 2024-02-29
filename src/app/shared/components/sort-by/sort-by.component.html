@@ -1,0 +1,42 @@
+<div class="h-max">
+  <div class="flex gap-2">
+    <button id="dropdownRadioButton" data-dropdown-toggle="dropdownRadio" #dropdownRadioButton
+      class="inline-flex items-center  text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+      type="button">
+      <svg class="w-4 h-4 text-gray-500 dark:text-gray-400 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor" viewBox="0 0 24 24">
+        <path
+          d="M5 3a2 2 0 0 0-1.5 3.3l5.4 6v5c0 .4.3.9.6 1.1l3.1 2.3c1 .7 2.5 0 2.5-1.2v-7.1l5.4-6C21.6 5 20.7 3 19 3H5Z" />
+      </svg>
+      Sort By {{selectedSort|titlecase}}
+      <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+        viewBox="0 0 10 6">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+      </svg>
+    </button>
+    <div class="inline-flex items-center ml-4">
+      <input (change)="onDescChange($event)" id="descending" type="checkbox" name="order" class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+      <label for="descending" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Descending</label>
+    </div>
+  </div>
+
+  <!-- Dropdown menu -->
+  <div id="dropdownRadio"
+    class="z-10 hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 p-0"
+    data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top"
+    style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate3d(522.5px, 3847.5px, 0px);">
+    <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioButton">
+      @for (item of sortValues ; track item; let i = $index) {
+      <li class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 rounded"
+        (click)="selectItem(item.key);dropdownRadioButton.click()">
+        <div class="flex items-center  pl-2">
+          <input [id]="item.key" type="radio" value="" name="filter-radio" [checked]="selectedSort == item.key"
+            class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+          <label [for]="item.key" (click)="$event.stopPropagation()"
+            class="p-2 cursor-pointer w-full h-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{item.value|titlecase}}</label>
+        </div>
+      </li>
+      }
+    </ul>
+  </div>
+</div>

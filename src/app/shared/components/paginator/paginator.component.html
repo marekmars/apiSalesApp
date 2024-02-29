@@ -1,5 +1,5 @@
-<nav aria-label="Page navigation example" class="mt-4 flex justify-center w-full flex-wrap gap-5 ">
-  <ul class="flex items-center -space-x-px h-10 text-base" [ngClass]="{'hidden': totalItems <= itemsPerPage}">
+<nav aria-label="Page navigation example" class="mt-4 flex justify-center w-full flex-wrap gap-5 ngcl z-10" [ngClass]="{'hidden': totalItems <= 0}">
+  <ul class="flex items-center -space-x-px h-10 text-base z-10" [ngClass]="{'hidden': totalItems <= itemsPerPage}">
     <li>
       <a [ngClass]="{
           'cursor-not-allowed': currentPage === 1,
@@ -91,11 +91,11 @@
     </li>
   </ul>
 
-  <div class="flex flex-col w-fit items-center">
+  <div class="flex flex-col w-fit items-center z-10">
     <form class="max-w-sm mx-auto" [formGroup]="itemsXPageForms">
       <select formControlName="itemsXPage" (change)="setItemsPerPage()"
         class=" bg-gray-50 border border-gray-300 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-00 dark:focus:ring-blue-500 dark:focus:border-blue-500">
-        
+
         @for (item of rowsPerPageOptions; track item;let f=$first) {
         <option value="{{item}}" class="text-gray-300" >{{item}}</option>
         }
