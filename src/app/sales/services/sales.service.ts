@@ -21,13 +21,8 @@ export class SalesService {
       .set('limit', take.toString())
       .set('filter', filter ? filter : '')
       .set('orderBy', orderBy ? orderBy.toLowerCase().replace(/\s/g, ''): '')
-      .set('desc', desc )
-      ;
+      .set('desc', desc );
     console.log("ENTRO SERVICIO");
-
-    // if (filter) {
-    //     params.set('filter', filter)
-    // }
     return this._http.get<APIResponse<Sale>>(this._url, { params })
   }
   deleteSales(id:number): Observable<APIResponse<Sale>> {    // if (filter) {

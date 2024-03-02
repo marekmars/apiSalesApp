@@ -9,5 +9,5 @@ export const routes: Routes = [
   { path: 'users', loadChildren: () => import('./users/users.routing').then(m => m.usersRoutes) , canActivate: [authGuard]},
   { path: 'auth', loadChildren: () => import('./auth/auth.routing').then(m => m.authRoutes) , canActivate: [loginGuard]},
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: '**', loadComponent: () => import('./shared/404/404-page.component').then(m => m.NotFoundPageComponent) }
+  { path: '**', loadComponent: () => import('./shared/pages/404/404-page.component').then(m => m.NotFoundPageComponent) }
 ];

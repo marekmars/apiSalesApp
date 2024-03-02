@@ -8,3 +8,4 @@ export interface Product {
   imageUrl:     string;
   description:  null;
 }
+

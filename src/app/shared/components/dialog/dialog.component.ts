@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { initFlowbite } from 'flowbite';
 import { ActionValue } from '../../interfaces/action-values.interfaces';
 
 @Component({
@@ -26,7 +25,7 @@ export class DialogComponent {
   @Output() public valueOutput = new EventEmitter<ActionValue<any>>;
 
   ngOnInit(): void {
-    initFlowbite();
+
     if (this.timmerValue > 0) {
       setTimeout(() => {
         this.closeModal();

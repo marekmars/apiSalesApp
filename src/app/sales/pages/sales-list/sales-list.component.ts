@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
 import { CommonModule } from '@angular/common';
 import { AlertComponent } from "../../../shared/components/alert/alert.component";
@@ -33,18 +33,18 @@ import { RouterLink } from '@angular/router';
     RouterLink]
 })
 
-export class SalesListComponent implements OnInit {
+export class SalesListComponent implements OnInit,OnDestroy {
 
 
   private _salesService: SalesService = inject(SalesService)
   private _paginatorService: PaginatorService = inject(PaginatorService);
-  private _searchBarService: SearchBarService = inject(SearchBarService);
+  // private _searchBarService: SearchBarService = inject(SearchBarService);
   private _sortByService: SortByService = inject(SortByService);
 
 
   private _currentPageSubscription!: Subscription
   private _pageSelectorSubscription!: Subscription
-  private _searchSubscription!: Subscription
+  // private _searchSubscription!: Subscription
   private _sortBySubscription!: Subscription
 
   public sortBy: SortBy = {
@@ -52,7 +52,7 @@ export class SalesListComponent implements OnInit {
     desc: 0
   };
 
-
+  public placeholder: string = 'Search...';
   public desc: number = 0
   public loading: boolean = true;
   public itemsEmpty: boolean = false;
@@ -79,6 +79,7 @@ export class SalesListComponent implements OnInit {
   ngOnInit(): void {
     this._currentPageSubscription = this._paginatorService.currentPage$.subscribe(
       (page) => {
+
         this.currentPage = page
         this.getValues(this.sortBy.desc, this.searchValue, this.sortBy.sort)
       }
@@ -92,18 +93,19 @@ export class SalesListComponent implements OnInit {
       }
     )
 
-    this._searchSubscription = this._searchBarService.searchSubject$.subscribe(
-      (search) => {
-        this.searchValue = search
-        this.currentPage = 1
-        this._paginatorService.setCurrentPage(this.currentPage)
+    // this._searchSubscription = this._searchBarService.searchSubject$.subscribe(
+    //   (search) => {
+    //     this.searchValue = search
+    //     this.currentPage = 1
+    //     this._paginatorService.setCurrentPage(this.currentPage)
 
-        // this.getValues(this.sortBy.desc, search, this.sortBy.sort)
-      }
-    );
+    //     // this.getValues(this.sortBy.desc, search, this.sortBy.sort)
+    //   }
+    // );
 
     this._sortBySubscription = this._sortByService.sortBy$.subscribe(
       (sortBy) => {
+
         this.currentPage = 1
         this._paginatorService.setCurrentPage(this.currentPage)
         this.sortBy = sortBy
@@ -115,7 +117,7 @@ export class SalesListComponent implements OnInit {
 
 
   getValues(desc: number, filter?: string, orderBy?: string,): void {
-    this.loading = true
+    // this.loading = true
     this._salesService.getSales(this.itemsPerPage * (this.currentPage - 1), this.itemsPerPage, filter, orderBy, desc)
       .subscribe((res: APIResponse<Sale>) => {
         if (res.data.length === 0) {
@@ -175,12 +177,15 @@ export class SalesListComponent implements OnInit {
     this.showModal = false;
   }
 
-
+  search(search: string) {
+    this.searchValue = search;
+    this.getValues(this.sortBy.desc, this.searchValue, this.sortBy.sort)
+  }
 
   ngOnDestroy(): void {
     this._currentPageSubscription.unsubscribe();
     this._pageSelectorSubscription.unsubscribe();
-    this._searchSubscription.unsubscribe();
+    // this._searchSubscription.unsubscribe();
     this._sortBySubscription.unsubscribe();
   }
 

@@ -11,6 +11,7 @@
                 pr-10
                 shadow-sm
                 focus:outline-none focus:shadow-outline
+                dark:focus:ring-green-500 dark:focus:border-green-500
                 dark:text-gray-400 dark:bg-gray-800  dark:border-gray-800  w-full py-2.5 px-4 text-gray-700 text-base font-normal border border-gray-200 rounded-lg
               " placeholder="Select date" />
 
@@ -22,7 +23,7 @@
               </svg>
             </div>
 
-            <div class="bg-gray-800 mt-14 rounded-lg shadow p-4 absolute top-0 left-0 border border-gray-700" style=""
+            <div class="bg-gray-800 mt-14 z-50 rounded-lg shadow p-4 absolute top-0 left-0 border border-gray-700" style=""
               [hidden]="!showDatepicker" (keydown.away)="showDatepicker = false">
               <div class="flex justify-between items-center mb-2">
                 <div>
@@ -36,7 +37,7 @@
                       duration-100
                       inline-flex
                       cursor-pointer
-                      hover:bg-gray-600
+                      hover:bg-green-800
                       p-1
                       rounded-full
                     " [ngClass]="{ 'cursor-not-allowed opacity-25': month === 0 }"
@@ -52,7 +53,7 @@
                       duration-100
                       inline-flex
                       cursor-pointer
-                      hover:bg-gray-600
+                      hover:bg-green-800
                       p-1
                       rounded-full
                     " [ngClass]="{ 'cursor-not-allowed opacity-25': month === 11 }"
@@ -88,8 +89,8 @@
                         ease-in-out
                         duration-100
                       " [ngClass]="{
-                        'bg-gray-300 text-gray-800': isSelected(date) === true,
-                        'text-gray-300 hover:bg-gray-600 hover:text-gray-300' : isSelected(date) === false
+                        'bg-green-400 text-gray-800': isSelected(date) === true,
+                        'text-gray-300 hover:bg-green-800 hover:text-gray-300' : isSelected(date) === false
                       }">
                       {{ date }}
                     </div>

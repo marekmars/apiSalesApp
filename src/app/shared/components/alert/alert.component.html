@@ -1,9 +1,9 @@
 
 
-<div class="fixed opacity-0 bottom-0 right-0 p-6 transition-opacity duration-200 "
+<div class="fixed opacity-0 bottom-0 right-0 p-6 transition-opacity duration-200 z-0"
   [ngClass]="{ 'opacity-100': show, 'z-50': show, 'z-0': !show }">
   <div id="alert-3"
-    class="flex items-center p-4 mb-4  rounded-lg  bg-gray-800 "
+    class="flex items-center p-4 mb-4  rounded-lg  bg-gray-800"
     [ngClass]="{ 'bg-red-800 ': error, 'bg-green-800': success, 'bg-yellow-500': warning }"
     role="alert">
     <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"

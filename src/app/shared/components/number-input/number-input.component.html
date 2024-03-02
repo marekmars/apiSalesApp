@@ -1,0 +1,30 @@
+<div class="relative flex items-center ">
+  <button type="button" id="decrement-button" (click)="subNumber()" [disabled]="inputNumber <= 1"
+    [ngClass]="{ 'cursor-not-allowed hover:bg-none': inputNumber <= 1, 'hover:bg-gray-600': inputNumber > 1 } "
+    class=" bg-gray-800  rounded-s-lg p-3 h-11 focus:outline-none">
+    <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+      viewBox="0 0 18 2">
+      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" />
+    </svg>
+  </button>
+
+  <div class="relative w-full">
+    <input type="text" id="quantity-input" (keypress)="numericOnly($event)"
+      class="b  border-none h-11 text-center  text-sm  block w-full py-2.5 bg-gray-800  placeholder-gray-400 text-white dark:focus:ring-0 dark:focus:border-none"
+      required [(ngModel)]="inputNumber" (ngModelChange)="onChange($event)" />
+    <div class="absolute inset-y-0 start-0 top-0 flex items-center pe-3.5 pointer-events-none " style="min-width: 24px;">
+      <img class="h-5" [src]="imgScr" alt="">
+    </div>
+  </div>
+
+
+  <button type="button" id="increment-button" (click)="addNumber()" [disabled]="inputNumber >= maxNumber"
+    [ngClass]="{ 'cursor-not-allowed hover:bg-none': inputNumber >= maxNumber, 'hover:bg-gray-600': inputNumber < maxNumber } "
+    class="bg-gray-800    rounded-e-lg p-3 h-11  focus:outline-none">
+    <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+      viewBox="0 0 18 18">
+      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
+    </svg>
+  </button>
+
+</div>

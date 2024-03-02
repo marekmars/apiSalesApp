@@ -11,7 +11,7 @@
 </a>
 <div class="flex flex-column gap-4 sm:flex-row flex-wrap  items-center content-center justify-between pb-5"
   [ngClass]="{'hidden': tableItems.length === 0}">
-  <shared-search-bar> </shared-search-bar>
+  <shared-search-bar [placeholder] ="placeholder" (searchEmiter)="search($event)"> </shared-search-bar>
   <shared-sort-by [sortBy]="sortBy"> </shared-sort-by>
 </div>
 @if (!itemsEmpty) {
@@ -30,7 +30,6 @@
         <th scope="col" class="px-6 py-3 ">
           <div class="text-center flex justify-center content-center">
             <span> Client</span>
-
           </div>
         </th>
         <th scope="col" class="px-6 py-3 ">
@@ -95,9 +94,16 @@
     </tbody>
   </table>
 </div>
-<shared-paginator [totalItems]="totalItems" [rowsPerPageOptions]="itemsPerPageOptions"></shared-paginator>
+
 
 }
+<shared-paginator [totalItems]="totalItems" [rowsPerPageOptions]="itemsPerPageOptions"></shared-paginator>
+<shared-alert [show]="show" [success]="true" textValue="Sale deleted successfully"></shared-alert>
+<shared-dialog [showModal]="showModal" [iconScr]="'/assets/warning.svg'" [title]="'Delete Element'"
+  [description]="'Are you sure you want to delete this element?'" [okBtnTxt]="'Yes, delete it'"
+  [cancelBtnTxt]="'Cancel'" [actionValue]="actionValue" [cancelBtn]="true"
+  (valueOutput)="doAction($event)"></shared-dialog>
+
 }@else {
 <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
   role="alert">
@@ -105,11 +111,4 @@
 </div>
 }
 
-  <shared-alert [show]="show" [success]="true"  textValue="Sale deleted successfully"></shared-alert>
 
-
-
-<shared-dialog [showModal]="showModal" [iconScr]="'/assets/warning.svg'" [title]="'Delete Element'"
-  [description]="'Are you sure you want to delete this element?'" [okBtnTxt]="'Yes, delete it'"
-  [cancelBtnTxt]="'Cancel'" [actionValue]="actionValue" [cancelBtn]="true"
-  (valueOutput)="doAction($event)"></shared-dialog>

@@ -12,10 +12,12 @@ export class PaginatorService {
   public pageSelectorSubject$ = this.pageSelectorSubject.asObservable();
 
   setCurrentPage(page: number): void {
+    console.log("page ", page);
     this.currentPageSubject.next(page);
   }
 
   setPageSelector(page: number): void {
+    console.log("selectorpage ", page);
     this.pageSelectorSubject.next(page);
   }
 }

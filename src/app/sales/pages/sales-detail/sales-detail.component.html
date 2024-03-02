@@ -1,62 +1,163 @@
 <section class="">
-  <div class="max-w-6xl px-4 mx-auto">
-    <div class="p-6 bg-white border border-gray-100 rounded-lg shadow dark:bg-gray-900 dark:border-gray-900">
+  <div class="max-w-6xl  mx-auto">
+    <div class=" bg-white border border-gray-100 rounded-lg shadow dark:bg-gray-900 dark:border-gray-900">
+
+      @if(sale){
       <div class="pb-6 border-b border-gray-100 dark:border-gray-700 ">
         <h2 class="text-xl font-bold text-gray-800 md:text-3xl dark:text-gray-300">
           Sale N° {{sale?.id}}
         </h2>
 
       </div>
-      <form action="">
-
-      </form>
-      <div class="py-6 border-b border-gray-100 dark:border-gray-800">
-        <div class="w-full md:w-9/12">
-          <div class="flex flex-wrap -m-3">
-            <div class="w-full p-3 md:w-1/3">
-              <p class="text-base font-semibold text-gray-700 dark:text-gray-400">
-                Date
-              </p>
-            </div>
-            <div class="w-full p-3 md:flex-1">
-              <shared-date-picker (dateEmiter)="getDate($event)"></shared-date-picker>
-              <input type="date" hidden>
-            </div>
-          </div>
-        </div>
+      }@else {
+      <div class="pb-6 border-b border-gray-100 dark:border-gray-700 ">
+        <h2 class="text-xl font-bold text-gray-800 md:text-3xl dark:text-gray-300">
+          Add Sale
+        </h2>
       </div>
+      }
 
-      <div class="py-6 border-b border-gray-100 dark:border-gray-800">
-        <div class="w-full md:w-9/12">
-          <div class="flex flex-wrap -m-3">
-            <div class="w-full p-3 md:w-1/3">
-              <p class="text-sm font-semibold text-gray-800 dark:text-gray-400">Client</p>
-            </div>
-            <div class="w-full p-3 md:flex-1">
-              <div
-                class="shadow-input">
-                <shared-search-bar> </shared-search-bar>
-                <input
-                  type="text"  hidden>
+      <form [formGroup]="saleForm" (ngSubmit)="onSubmit()">
+        <div class="py-6 border-b border-gray-100 dark:border-gray-800">
+          <div class="w-full ">
+            <div class="flex flex-wrap -m-3">
+              <div class="w-full p-3 md:w-1/3">
+                <label class="text-base font-semibold text-gray-700 dark:text-gray-400">
+                  Date
+                </label>
+              </div>
+              <div class="w-full p-3 md:w-2/3">
+                <shared-date-picker (dateEmiter)="getDate($event)"></shared-date-picker>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="flex pt-6 flex-wrap -m-1.5">
-        <div class="w-full md:w-auto p-1.5">
-          <button (click)="cancel()"
-            class="flex flex-wrap justify-center w-full px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-md dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-800 dark:border-gray-700 hover:border-gray-300 ">
-            <p>Cancel</p>
-          </button>
+
+        <div class="py-6 border-b border-gray-100 dark:border-gray-800">
+          <div class="w-full ">
+            <div class="flex flex-wrap -m-3">
+              <div class="w-full p-3 md:w-1/3">
+                <label class="text-base font-semibold text-gray-800 dark:text-gray-400">Client</label>
+              </div>
+              <div class="w-full p-3 md:flex-1 relative">
+                <div class="shadow-input w-full relative">
+                  <shared-search-bar [value]="clientName" [placeholder]="placeholderClient"
+                    (searchEmiter)="searchClient($event)">
+                  </shared-search-bar>
+                  @if(clients.length > 0){
+                  <div id="dropdown"
+                    class="z-50 bg-white divide-y flex divide-gray-100 rounded-lg shadow w-full mt-1 dark:bg-gray-700 absolute">
+                    <!-- Añade 'absolute' aquí -->
+                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 right-0 w-full"
+                      aria-labelledby="dropdown-button">
+                      @for (client of clients; track client) {
+                      <li>
+                        <button type="button" (click)="selectClient(client)"
+                          class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                          {{client.lastName+" "+client.name+" - "+client.idCard}}
+                        </button>
+                      </li>
+                      }
+                    </ul>
+
+                  </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="w-full md:w-auto p-1.5">
-          <button
-            class="flex flex-wrap justify-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-blue-500 rounded-md hover:bg-blue-600 ">
-            <p>Save</p>
-          </button>
+
+        <div class="py-6 border-b border-gray-100 dark:border-gray-800">
+          <div class="w-full ">
+            <div class="flex flex-wrap -m-3">
+              <div class="w-full p-3 md:w-1/3">
+                <label class="text-base font-semibold text-gray-800 dark:text-gray-400">Products</label>
+              </div>
+              <div class="w-full p-3 md:flex-1 relative">
+                <div class="shadow-input w-full relative">
+                  <shared-search-bar [placeholder]="placeholderProduct" [value]="productName"
+                    (searchEmiter)="searchProduct($event)">
+                  </shared-search-bar>
+                  @if(products.length > 0){
+                  <div id="dropdown"
+                    class="z-50 bg-white divide-y flex divide-gray-100 rounded-lg shadow w-full mt-1 dark:bg-gray-700 absolute">
+                    <!-- Añade 'absolute' aquí -->
+                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 right-0 w-full"
+                      aria-labelledby="dropdown-button">
+                      @for (product of products; track client) {
+                      <li>
+                        <button type="button" (click)="selectProduct(product)"
+                          class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                          {{product.name + ' - Stock: ' + product.stock}}
+                        </button>
+                      </li>
+                      }
+                    </ul>
+                  </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+        @if(this.product&&this.productName.length>0){
+
+        <div class="w-full py-6 gap-3  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-9 justify-between content-between">
+          <div class="flex gap-3 flex-col pt-3 md:pt-0 md:col-span-1 lg:col-span-2">
+            <label class="text-base font-semibold text-gray-800 dark:text-gray-400">Quantity</label>
+            <shared-number-input [inputNumber]="1" [maxNumber]="product.stock  " imgScr=''
+              (outputNumber)="onQuantityChange($event)"></shared-number-input>
+          </div>
+          <div class="flex gap-3 flex-col pt-3 md:pt-0 md:col-span-1 lg:col-span-2">
+            <label class="text-base font-semibold text-gray-800 dark:text-gray-400">Unitary Price</label>
+            <shared-number-input [inputNumber]="10" (outputNumber)="onQuantityChange($event)"
+              imgScr="/assets/dollar.svg"></shared-number-input>
+
+          </div>
+          <div class="flex gap-3 flex-col pt-3 md:pt-0 md:col-span-1 lg:col-span-2">
+            <label class="text-base font-semibold text-gray-800 dark:text-gray-400">Total</label>
+            <shared-number-input [inputNumber]="10" (outputNumber)="onQuantityChange($event)"
+              imgScr="/assets/dollar.svg"></shared-number-input>
+          </div>
+          <div class="flex gap-3 flex-col pt-3 md:pt-0 col-span-1 lg:col-span-2">
+            <label class="text-base font-semibold text-gray-800 dark:text-gray-400">Stock</label>
+            <shared-number-input [inputNumber]="10" (outputNumber)="onQuantityChange($event)"></shared-number-input>
+          </div>
+          <div class="flex gap-3 flex-col pt-3 md:pt-0 md:col-span-2 lg:col-span-1 items-center">
+            <button type="button"
+              class="sm:w-1/2 md:w-1/4 lg:w-full focus:outline-none flex justify-center text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-2.5 py-2.5 md:mt-auto dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+              <svg class="w-6 h-6  text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd"
+                  d="M2 12a10 10 0 1 1 20 0 10 10 0 0 1-20 0Zm11-4.2a1 1 0 1 0-2 0V11H7.8a1 1 0 1 0 0 2H11v3.2a1 1 0 1 0 2 0V13h3.2a1 1 0 1 0 0-2H13V7.8Z"
+                  clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+
+
+        </div>
+
+        }
+
+
+        <div class="flex pt-6 flex-wrap -m-1.5">
+          <div class="w-full md:w-auto p-1.5">
+            <button (click)="cancel()"
+              class="flex flex-wrap justify-center w-full px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-md dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-800 dark:border-gray-700 hover:border-gray-300 ">
+              <p>Cancel</p>
+            </button>
+          </div>
+          <div class="w-full md:w-auto p-1.5">
+            <button
+              class="flex flex-wrap justify-center w-full px-4 py-2 text-sm font-medium text-white bg-green-500 border border-green-500 rounded-md hover:bg-green-600 ">
+              <p>Save</p>
+            </button>
+          </div>
+        </div>
+      </form>
+
     </div>
   </div>
 </section>

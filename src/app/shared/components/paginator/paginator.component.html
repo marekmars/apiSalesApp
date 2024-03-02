@@ -1,13 +1,14 @@
-<nav aria-label="Page navigation example" class="mt-4 flex justify-center w-full flex-wrap gap-5 ngcl z-10" [ngClass]="{'hidden': totalItems <= 0}">
-  <ul class="flex items-center -space-x-px h-10 text-base z-10" [ngClass]="{'hidden': totalItems <= itemsPerPage}">
+<nav aria-label="Page navigation example" class="mt-4 flex justify-center w-full flex-wrap gap-5 ngcl z-10"
+  [ngClass]="{'hidden': totalItems <= 0}">
+  <ul class="flex items-center  h-12 text-base z-10" [ngClass]="{'hidden': totalItems <= itemsPerPage}">
     <li>
       <a [ngClass]="{
           'cursor-not-allowed': currentPage === 1,
           'pointer-events-none': currentPage === 1,
-          'opacity-50 ': currentPage === 1,
+          'opacity-30 ': currentPage === 1,
           'cursor-pointer': currentPage !== 1
         }" (click)="navigateToFirstPage()"
-        class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        class="flex items-center justify-center px-4 h-12  leading-tight text-gray-500 bg-white    rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none">
         <span class=" sr-only">First</span>
         <svg class="w-6 h-6 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -21,10 +22,10 @@
       <a [ngClass]="{
           'cursor-not-allowed': currentPage === 1,
           'pointer-events-none': currentPage === 1,
-          'opacity-50 ': currentPage === 1,
+          'opacity-30 ': currentPage === 1,
           'cursor-pointer': currentPage !== 1
         }" (click)="navigateToPreviousPage()"
-        class="cursor-pointer flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        class="cursor-pointer flex items-center justify-center px-4 h-12 leading-tight text-gray-500 bg-white   hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
         <span class="sr-only">Previous</span>
         <svg class="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
           viewBox="0 0 6 10">
@@ -39,7 +40,7 @@
     @for (item of pageRange; track item;let i = $index; let last=$last){
     <li>
       <a [id]="item"
-        class="flex cursor-pointer items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        class="flex cursor-pointer items-center justify-center px-4 h-12 leading-tight text-gray-500 bg-white   hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
         (click)="navigateToPage(item)" [ngClass]="{'active': item === currentPage}">
         {{item}}
       </a>
@@ -51,7 +52,7 @@
     @for (page of pageNumbers; track page;let i = $index; let last=$last){
     <li class="hidden sm:block">
       <a [id]="page"
-        class="flex cursor-pointer items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        class="flex cursor-pointer items-center justify-center px-4 h-12 leading-tight text-gray-500 bg-white   hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
         (click)="navigateToPage(page)" [ngClass]="{'active': page === currentPage}">
         {{page}}
       </a>
@@ -62,10 +63,10 @@
       <a (click)="navigateToNextPage()" [ngClass]="{
           'cursor-not-allowed': currentPage === maxPages,
           'pointer-events-none': currentPage === maxPages,
-          'opacity-50 ': currentPage === maxPages,
+          'opacity-30 ': currentPage === maxPages,
           'cursor-pointer': currentPage !== maxPages
         }"
-        class="cursor-pointer flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300   hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        class="cursor-pointer flex items-center justify-center px-4 h-12 leading-tight text-gray-500 bg-white     hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
         <span class="sr-only">Next</span>
         <svg class="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
           viewBox="0 0 6 10">
@@ -77,10 +78,10 @@
       <a [ngClass]="{
           'cursor-not-allowed': currentPage === maxPages,
           'pointer-events-none': currentPage === maxPages,
-          'opacity-50 ': currentPage === maxPages,
+          'opacity-30 ': currentPage === maxPages,
           'cursor-pointer': currentPage !== maxPages
         }" (click)="navigateToLastPage()"
-        class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        class="flex items-center justify-center px-4 h-12 leading-tight text-gray-500 bg-white   rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
 
         <span class="sr-only">Last</span>
         <svg class="w-6 h-6 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -91,16 +92,20 @@
     </li>
   </ul>
 
-  <div class="flex flex-col w-fit items-center z-10">
-    <form class="max-w-sm mx-auto" [formGroup]="itemsXPageForms">
+
+  <div class="flex  w-fit items-center z-10">
+    <shared-dropdown [dropdownValues]="rowsPerPageOptions" (selectedValueChange)="setItemsPerPage($event)"></shared-dropdown>
+
+    <!--  <form class="max-w-sm mx-auto" [formGroup]="itemsXPageForms">
       <select formControlName="itemsXPage" (change)="setItemsPerPage()"
-        class=" bg-gray-50 border border-gray-300 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-00 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        class=" bg-gray-50   text text-sm rounded-lg focus:ring-blue-500 focus:-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:-gray-600 dark:placeholder-gray-400 dark:text-gray-00 dark:focus:ring-blue-500 dark:focus:-blue-500">
 
         @for (item of rowsPerPageOptions; track item;let f=$first) {
-        <option value="{{item}}" class="text-gray-300" >{{item}}</option>
+        <option value="{{item}}" class="text" >{{item}}</option>
         }
       </select>
-    </form>
+    </form>-->
   </div>
+
 
 </nav>
