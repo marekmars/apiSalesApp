@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import '@sweetalert2/theme-dark/dark.min.css';
 
 * {
   box-sizing: border-box;
@@ -13,12 +14,11 @@ body {
   color: whitesmoke;
 }
 
+
 .simplebar-scrollbar::before {
   background-color: #4c822a;
   opacity: 1 !important;
 }
-
-
 
 html::-webkit-scrollbar {
   width: 0.8vw;
@@ -36,3 +36,9 @@ html::-webkit-scrollbar-thumb:hover {
   opacity: 0.1 !important;
   border-radius: 0.5rem;
 }
+.swal2-dark{
+  background-color: #1f2937;
+  color: whitesmoke;
+}
+
+

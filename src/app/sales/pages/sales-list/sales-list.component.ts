@@ -1,22 +1,24 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
 import { CommonModule } from '@angular/common';
 import { AlertComponent } from "../../../shared/components/alert/alert.component";
-import { DialogComponent } from "../../../shared/components/dialog/dialog.component";
+
 import { Sale } from '../../interfaces/sales.interfaces';
 import { StatePipe } from '../../../shared/pipes/statePipe.pipe';
 import { SalesService } from '../../services/sales.service';
 import { APIResponse } from '../../../shared/interfaces/api-response.interfaces';
 import { PaginatorService } from '../../../shared/components/paginator/services/paginator.service';
-import { Subscription, combineLatest, delay, switchMap } from 'rxjs';
+import { Subscription, catchError, combineLatest, delay, of, switchMap, tap } from 'rxjs';
 import { ActionValue } from '../../../shared/interfaces/action-values.interfaces';
 import { SkeletonTableComponent } from "../../../shared/components/skeleton-views/components/skeleton-table/skeleton-table.component";
 import { SearchBarComponent } from "../../../shared/components/search-bar/search-bar.component";
-import { SearchBarService } from '../../../shared/components/search-bar/services/search-bar.service';
 import { SortByComponent } from "../../../shared/components/sort-by/sort-by.component";
 import { SortBy, SortByEnum } from '../../../shared/interfaces/sort-by.interface';
 import { SortByService } from '../../../shared/components/sort-by/services/sort-by.service';
+
 import { RouterLink } from '@angular/router';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import Swal from 'sweetalert2';
 
 @Component({
   standalone: true,
@@ -25,7 +27,6 @@ import { RouterLink } from '@angular/router';
   imports: [PaginatorComponent,
     CommonModule,
     AlertComponent,
-    DialogComponent,
     StatePipe,
     SkeletonTableComponent,
     SearchBarComponent,
@@ -33,24 +34,27 @@ import { RouterLink } from '@angular/router';
     RouterLink]
 })
 
-export class SalesListComponent implements OnInit,OnDestroy {
+export class SalesListComponent implements OnInit, OnDestroy {
 
 
   private _salesService: SalesService = inject(SalesService)
   private _paginatorService: PaginatorService = inject(PaginatorService);
-  // private _searchBarService: SearchBarService = inject(SearchBarService);
   private _sortByService: SortByService = inject(SortByService);
-
-
   private _currentPageSubscription!: Subscription
   private _pageSelectorSubscription!: Subscription
-  // private _searchSubscription!: Subscription
   private _sortBySubscription!: Subscription
 
   public sortBy: SortBy = {
     sort: SortByEnum.id,
     desc: 0
   };
+
+  public title: string = '';
+  public description: string = '';
+  public okBtnTxt: string = '';
+  public cancelBtnTxt: string = '';
+    public notificationTitle: string = '';
+  public notificationDescription: string = '';
 
   public placeholder: string = 'Search...';
   public desc: number = 0
@@ -138,33 +142,70 @@ export class SalesListComponent implements OnInit,OnDestroy {
     this.actionValue.action = values.action as "edit" | "delete" | "create" | "";
     this.actionValue.item = values.item;
     console.log(values)
-    this.showDialog();
+    this.title = 'Delete Sale'
+    this.description = 'Are you sure you want to delete this sale?'
+    this.okBtnTxt = 'Delete'
+    this.cancelBtnTxt = 'Cancel'
+    this.notificationTitle = 'Sale deleted'
+    this.notificationDescription = 'The sale has been deleted successfully'
+    Swal.fire({
+      title: this.title,
+      text: this.description,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#4c822a",
+      cancelButtonColor: "#d33 ",
+      confirmButtonText: this.okBtnTxt,
+      customClass: {
+        popup: 'swal2-dark',
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.doAction(this.actionValue);
+
+      }
+    });
   }
 
-  showDialog() {
-    this.showModal = true;
-
-  }
-  onDialogClosed() {
-    this.showModal = false;
-    this.show = true;
-    setTimeout(() => {
-      this.show = false
-
-    }, 2000)
-  }
 
   doAction($event: ActionValue<Sale>) {
     console.log($event)
     if ($event.item) {
       switch (this.actionValue.action) {
         case "delete": {
-          this._salesService.deleteSales($event.item.id).subscribe(
+          this._salesService.deleteSales($event.item.id)
+          .pipe(
+            tap((result) => {
+              Swal.fire({
+                title: this.notificationTitle,
+                text: this.notificationDescription,
+                confirmButtonColor: "#4c822a",
+                icon: "success",
+                customClass: {
+                  popup: 'swal2-dark',
+                }
+              })
+            }),
+            catchError(() => {
+              Swal.fire({
+                title: "Error",
+                text: "The sale could not be deleted",
+                confirmButtonColor: "#4c822a",
+                icon: "error",
+                customClass: {
+                  popup: 'swal2-dark',
+                }
+              })
+              return of({ error: true })
+            }),
+
+          )
+          .subscribe(
             (res) => {
               this.getValues(this.sortBy.desc, this.searchValue, this.sortBy.sort)
-              this.onDialogClosed();
             }
           )
+
           this.actionValue = {
             action: '',
             value: false,

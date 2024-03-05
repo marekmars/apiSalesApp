@@ -18,4 +18,5 @@ export class AlertComponent {
   closeAlert(): void {
     this.show = false;
   }
+  
 }

@@ -18,10 +18,13 @@
     "@angular/platform-browser": "^17.0.0",
     "@angular/platform-browser-dynamic": "^17.0.0",
     "@angular/router": "^17.0.0",
+    "@sweetalert2/ngx-sweetalert2": "^12.3.0",
+    "@sweetalert2/theme-dark": "^5.0.16",
     "flowbite": "^2.3.0",
     "flowbite-datepicker": "^1.2.6",
     "jwt-decode": "^4.0.0",
     "rxjs": "~7.8.0",
+    "sweetalert2": "^11.10.5",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"
   },

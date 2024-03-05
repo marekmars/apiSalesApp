@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Output, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { DatePickerService } from './services/date-picker.service';
 
 @Component({
   selector: 'shared-date-picker',
@@ -11,9 +12,6 @@ import { FormsModule } from '@angular/forms';
 })
 export class DatePickerComponent {
   @ViewChild('datepicker') datePicker!: ElementRef;
-
-  // ...
-
   @HostListener('document:click', ['$event'])
   onClick(event: Event): void {
     if (this.datePicker &&
@@ -36,6 +34,7 @@ export class DatePickerComponent {
     'November',
     'December'
   ];
+  private sharedDateService: DatePickerService = inject(DatePickerService);
   public readonly DAYS: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   public days: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   public showDatepicker: boolean = false;
@@ -52,12 +51,17 @@ export class DatePickerComponent {
     this.initDate();
     this.getNoOfDays();
     let date = new Date(this.datepickerValue);
-
     this.dateEmiter.emit(date)
-
-
+    this.sharedDateService.resetDate$.subscribe(() => {
+      this.resetToDateToday();
+    });
   }
-
+  resetToDateToday(): void {
+    this.initDate();
+    this.getNoOfDays();
+    let date = new Date(this.datepickerValue);
+    this.dateEmiter.emit(date);
+  }
   initDate() {
     let today = new Date();
     this.month = today.getMonth();

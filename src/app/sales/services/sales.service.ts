@@ -9,6 +9,7 @@ import { APIResponse } from '../../shared/interfaces/api-response.interfaces';
   providedIn: 'root'
 })
 export class SalesService {
+
   private _http: HttpClient = inject(HttpClient)
   private _url = environments.baseUrl + '/sales'
   constructor() {
@@ -26,11 +27,16 @@ export class SalesService {
     return this._http.get<APIResponse<Sale>>(this._url, { params })
   }
   deleteSales(id:number): Observable<APIResponse<Sale>> {    // if (filter) {
-
     return this._http.delete<APIResponse<Sale>>(`${this._url}/${id}`)
   }
   getSale(id:number): Observable<APIResponse<Sale>> {    // if (filter) {
     return this._http.get<APIResponse<Sale>>(`${this._url}/${id}`)
+  }
+  addSale(sale:Sale): Observable<APIResponse<Sale>> {
+    return this._http.post<APIResponse<Sale>>(this._url, sale)
+  }
+  updateSale(sale: Sale) {
+    return this._http.patch<APIResponse<Sale>>(this._url, sale);
   }
 
 
