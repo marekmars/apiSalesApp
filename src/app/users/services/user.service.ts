@@ -22,4 +22,17 @@ export class UserService {
     const userId: number = decodedToken.nameid;
     return this.getUserById(userId)
   }
+  public getUsers(): Observable<APIResponse<User[]>> {
+    return this._http.get<APIResponse<User[]>>(this._url);
+  }
+  public addUser(user: User): Observable<APIResponse<User>> {
+    return this._http.post<APIResponse<User>>(this._url, user)
+  }
+  public updateUser(user: User): Observable<APIResponse<User>> {
+    return this._http.put<APIResponse<User>>(this._url, user)
+  }
+  public deleteUser(id: number): Observable<APIResponse<User>> {
+    const url = this._url + `/${id}`;
+    return this._http.delete<APIResponse<User>>(url)
+  }
 }

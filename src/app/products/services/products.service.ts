@@ -34,6 +34,19 @@ export class ProductService {
 
     return this._http.get<APIResponse<Product>>(this._url, { params });
   }
+  getProduct(id: number): Observable<APIResponse<Product>> {
+    return this._http.get<APIResponse<Product>>(this._url + '/' + id);
+
+  }
+  deleteProduct(id: number): Observable<APIResponse<Product>> {
+    return this._http.delete<APIResponse<Product>>(this._url + '/' + id);
+  }
+  updateProduct(product: Product): Observable<APIResponse<Product>> {
+    return this._http.put<APIResponse<Product>>(this._url + '/' + product.id, product);
+  }
+  addProduct(product: Product): Observable<APIResponse<Product>> {
+    return this._http.post<APIResponse<Product>>(this._url, product);
+  }
 
 
 

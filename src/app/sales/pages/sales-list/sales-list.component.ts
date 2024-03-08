@@ -1,8 +1,6 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
 import { CommonModule } from '@angular/common';
-import { AlertComponent } from "../../../shared/components/alert/alert.component";
-
 import { Sale } from '../../interfaces/sales.interfaces';
 import { StatePipe } from '../../../shared/pipes/statePipe.pipe';
 import { SalesService } from '../../services/sales.service';
@@ -19,6 +17,7 @@ import { SortByService } from '../../../shared/components/sort-by/services/sort-
 import { RouterLink } from '@angular/router';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import Swal from 'sweetalert2';
+import { TableColumn, TableComponent } from "../../../shared/components/table/table.component";
 
 @Component({
   standalone: true,
@@ -26,12 +25,11 @@ import Swal from 'sweetalert2';
   styleUrl: './sales-list.component.css',
   imports: [PaginatorComponent,
     CommonModule,
-    AlertComponent,
     StatePipe,
     SkeletonTableComponent,
     SearchBarComponent,
     SortByComponent,
-    RouterLink]
+    RouterLink, TableComponent]
 })
 
 export class SalesListComponent implements OnInit, OnDestroy {
@@ -53,9 +51,29 @@ export class SalesListComponent implements OnInit, OnDestroy {
   public description: string = '';
   public okBtnTxt: string = '';
   public cancelBtnTxt: string = '';
-    public notificationTitle: string = '';
+  public notificationTitle: string = '';
   public notificationDescription: string = '';
 
+  public columns: TableColumn[] = [
+    {
+      key: 'id', name: 'Sale N°', type: 'text'
+    },
+    {
+      key: 'client', name: 'name', type: 'object', propertyName: 'name',
+    },
+    {
+      key: 'client', name: 'last name', type: 'object', propertyName: 'lastName',
+    },
+    {
+      key: 'date', name: 'date', type: 'date'
+    },
+    {
+      key: 'total', name: 'total', type: 'money'
+    },
+  ];
+  public allowedValuesArray: SortByEnum[] = [
+    SortByEnum.id, SortByEnum.lastname, SortByEnum.date, SortByEnum.total,SortByEnum.name
+  ]
   public placeholder: string = 'Search...';
   public desc: number = 0
   public loading: boolean = true;
@@ -67,23 +85,17 @@ export class SalesListComponent implements OnInit, OnDestroy {
   public tableItems: Sale[] = [];
   public totalItems: number = 0;
   public showModal: boolean = false;
-  public actionValue: ActionValue<Sale>;
+  // public actionValue: ActionValue<Sale>;
+
   constructor() {
-    this.actionValue = {
-      action: '',
-      value: false,
-      item: null
-    }
+
   }
 
   public searchValue: string = '';
-  public headers: string[] = ['id', 'Client Name', 'Date', 'Total', 'State', 'Actions'];
-
 
   ngOnInit(): void {
     this._currentPageSubscription = this._paginatorService.currentPage$.subscribe(
       (page) => {
-
         this.currentPage = page
         this.getValues(this.sortBy.desc, this.searchValue, this.sortBy.sort)
       }
@@ -94,22 +106,12 @@ export class SalesListComponent implements OnInit, OnDestroy {
         this.currentPage = 1
         // this._paginatorService.setCurrentPage(this.currentPage)
         this.getValues(0, this.searchValue, "")
+        // this.getValues(this.sortBy.desc, this.searchValue, this.sortBy.sort)
       }
     )
 
-    // this._searchSubscription = this._searchBarService.searchSubject$.subscribe(
-    //   (search) => {
-    //     this.searchValue = search
-    //     this.currentPage = 1
-    //     this._paginatorService.setCurrentPage(this.currentPage)
-
-    //     // this.getValues(this.sortBy.desc, search, this.sortBy.sort)
-    //   }
-    // );
-
     this._sortBySubscription = this._sortByService.sortBy$.subscribe(
       (sortBy) => {
-
         this.currentPage = 1
         this._paginatorService.setCurrentPage(this.currentPage)
         this.sortBy = sortBy
@@ -131,86 +133,53 @@ export class SalesListComponent implements OnInit, OnDestroy {
           this.itemsEmpty = false;
           this.totalItems = res.totalCount
           this.tableItems = res.data
-          console.log(this.tableItems)
         }
 
       })
   }
 
 
-  onActionClick(values: { action: string, item: Sale }) {
-    this.actionValue.action = values.action as "edit" | "delete" | "create" | "";
-    this.actionValue.item = values.item;
-    console.log(values)
-    this.title = 'Delete Sale'
-    this.description = 'Are you sure you want to delete this sale?'
-    this.okBtnTxt = 'Delete'
-    this.cancelBtnTxt = 'Cancel'
-    this.notificationTitle = 'Sale deleted'
-    this.notificationDescription = 'The sale has been deleted successfully'
-    Swal.fire({
-      title: this.title,
-      text: this.description,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#4c822a",
-      cancelButtonColor: "#d33 ",
-      confirmButtonText: this.okBtnTxt,
-      customClass: {
-        popup: 'swal2-dark',
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.doAction(this.actionValue);
-
-      }
-    });
-  }
-
-
   doAction($event: ActionValue<Sale>) {
-    console.log($event)
     if ($event.item) {
-      switch (this.actionValue.action) {
+
+      switch ($event.action) {
         case "delete": {
+          this.notificationTitle = 'Sale deleted'
+          this.notificationDescription = 'The sale has been deleted successfully'
           this._salesService.deleteSales($event.item.id)
-          .pipe(
-            tap((result) => {
-              Swal.fire({
-                title: this.notificationTitle,
-                text: this.notificationDescription,
-                confirmButtonColor: "#4c822a",
-                icon: "success",
-                customClass: {
-                  popup: 'swal2-dark',
-                }
-              })
-            }),
-            catchError(() => {
-              Swal.fire({
-                title: "Error",
-                text: "The sale could not be deleted",
-                confirmButtonColor: "#4c822a",
-                icon: "error",
-                customClass: {
-                  popup: 'swal2-dark',
-                }
-              })
-              return of({ error: true })
-            }),
+            .pipe(
+              tap((result) => {
+                Swal.fire({
+                  title: this.notificationTitle,
+                  text: this.notificationDescription,
+                  confirmButtonColor: "#4c822a",
+                  icon: "success",
+                  customClass: {
+                    popup: 'swal2-dark',
+                  }
+                })
+              }),
+              catchError(() => {
+                Swal.fire({
+                  title: "Error",
+                  text: "The sale could not be deleted",
+                  confirmButtonColor: "#4c822a",
+                  icon: "error",
+                  customClass: {
+                    popup: 'swal2-dark',
+                  }
+                })
+                return of({ error: true })
+              }),
 
-          )
-          .subscribe(
-            (res) => {
-              this.getValues(this.sortBy.desc, this.searchValue, this.sortBy.sort)
-            }
-          )
+            )
+            .subscribe(
+              (res) => {
+                this.getValues(this.sortBy.desc, this.searchValue, this.sortBy.sort)
+              }
+            )
 
-          this.actionValue = {
-            action: '',
-            value: false,
-            item: null
-          };
+
           break;
         }
       }
@@ -220,13 +189,15 @@ export class SalesListComponent implements OnInit, OnDestroy {
 
   search(search: string) {
     this.searchValue = search;
-    this.getValues(this.sortBy.desc, this.searchValue, this.sortBy.sort)
+    this.currentPage = 1
+    this._paginatorService.setCurrentPage(this.currentPage)
+    // this.getValues(this.sortBy.desc, this.searchValue, this.sortBy.sort)
   }
 
   ngOnDestroy(): void {
     this._currentPageSubscription.unsubscribe();
     this._pageSelectorSubscription.unsubscribe();
-    // this._searchSubscription.unsubscribe();
+
     this._sortBySubscription.unsubscribe();
   }
 

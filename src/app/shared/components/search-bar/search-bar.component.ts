@@ -25,11 +25,12 @@ export class SearchBarComponent implements OnInit {
       .subscribe(
         value => {
           this.searchEmiter.emit(value);
-
+      
         }
       )
   }
   onKeyPress(txtInput: string): void {
+
     this._deBouncer.next(txtInput)
   }
   ngOnDestroy(): void {

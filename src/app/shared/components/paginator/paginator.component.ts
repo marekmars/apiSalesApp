@@ -9,6 +9,7 @@ import { DropdownComponent } from "../dropdown/dropdown.component";
 
 
 
+
 @Component({
   selector: 'shared-paginator',
   standalone: true,
@@ -23,6 +24,8 @@ export class PaginatorComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public rowsPerPageOptions: number[] = [];
 
   private _currentPageSubscription!: Subscription
+  // private _itemsPerPageSubscription!: Subscription
+
 
   public isDropdownOpen: boolean = false;
   public itemsPerPage: number = 0;
@@ -37,7 +40,6 @@ export class PaginatorComponent implements OnInit, OnDestroy, AfterViewInit {
     initFlowbite();
   }
   ngOnInit(): void {
-
     this.itemsPerPage = this.rowsPerPageOptions[0];
 
     this.itemsXPageForms = new FormGroup({
@@ -46,10 +48,14 @@ export class PaginatorComponent implements OnInit, OnDestroy, AfterViewInit {
     this._currentPageSubscription = this._paginatorService.currentPage$.subscribe(
       (page) => {
         this.currentPage = page
-        console.log("CURRENT ANTES: " + this.currentPage);
       }
     );
+    // this._itemsPerPageSubscription = this._paginatorService.pageSelectorSubject$.subscribe(
+    //   (itemsPerPage) => {
+    //     this.itemsPerPage = itemsPerPage
 
+    //   }
+    // )
   }
 
 
@@ -94,7 +100,7 @@ export class PaginatorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   navigateToPage(pageNumber: number) {
     this.currentPage = pageNumber;
-    console.log("CURRENT ANTES: " + this.currentPage);
+
     this._paginatorService.setCurrentPage(this.currentPage);
     // this.currentPageEmiter.emit(this.currentPage);
     if (pageNumber - 1 === this.pageRange[0] || pageNumber + 1 === this.pageRange[4]) {
@@ -133,13 +139,13 @@ export class PaginatorComponent implements OnInit, OnDestroy, AfterViewInit {
   setItemsPerPage(selectedPage: number) {
     this.currentPage = 1;
     this.itemsPerPage = selectedPage;
-    this._paginatorService.setPageSelector(this.itemsPerPage);
+    console.log('setItemsPerPage ', selectedPage);
+    this._paginatorService.setPageSelector(selectedPage);
     this.pageRange = [1, 2, 3, 4, 5]
   }
 
-
-
   ngOnDestroy(): void {
     this._currentPageSubscription.unsubscribe();
+    // this._itemsPerPageSubscription.unsubscribe();
   }
 }

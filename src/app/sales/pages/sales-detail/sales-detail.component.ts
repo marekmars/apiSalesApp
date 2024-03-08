@@ -15,7 +15,7 @@ import { SalesService } from '../../services/sales.service';
 import { SearchBarComponent } from '../../../shared/components/search-bar/search-bar.component';
 import { switchMap, tap } from 'rxjs';
 
-import { AlertComponent } from "../../../shared/components/alert/alert.component";
+
 
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import Swal from 'sweetalert2';
@@ -31,8 +31,6 @@ import Swal from 'sweetalert2';
     DatePickerComponent,
     SearchBarComponent,
     NumberInputComponent,
-
-    AlertComponent,
     SweetAlert2Module]
 })
 export class SalesDetailComponent implements OnInit {

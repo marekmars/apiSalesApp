@@ -43,15 +43,16 @@ export class SidenavComponent {
         path: '/clients'
       },
       {
-        label:'Users',
-        icon:'/assets/users.svg',
-        path: '/users'
-      },
-      {
         label:'Products',
         icon:'/assets/products.svg',
         path: '/products'
       },
+
+      {
+        label:'Users',
+        icon:'/assets/users.svg',
+        path: '/users'
+      }
     ]
   }
 

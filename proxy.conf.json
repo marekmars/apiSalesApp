@@ -1,0 +1,18 @@
+{
+  "/destroy": {
+    "target": "https://api.cloudinary.com/v1_1/dcrxf4g5d/image/destroy",
+    "secure": true,
+    "pathRewrite": {
+      "^/destroy": ""
+    },
+    "changeOrigin": true
+  },
+  "/upload": {
+    "target": "https://api.imgbb.com/1/upload",
+    "secure": true,
+    "pathRewrite": {
+      "^/upload": ""
+    },
+    "changeOrigin": true
+  }
+}

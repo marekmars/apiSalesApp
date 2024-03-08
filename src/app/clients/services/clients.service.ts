@@ -15,21 +15,35 @@ export class ClientService {
   getClients(skip?: number, take?: number, filter?: string, orderBy?: string, desc?: number): Observable<APIResponse<Client>> {
     let params = new HttpParams();
     if (skip !== undefined) {
-        params = params.set('skip', skip.toString());
+      params = params.set('skip', skip.toString());
     }
     if (take !== undefined) {
-        params = params.set('limit', take.toString());
+      params = params.set('limit', take.toString());
     }
     if (filter !== undefined) {
-        params = params.set('filter', filter);
+      params = params.set('filter', filter);
     }
     if (orderBy !== undefined) {
-        params = params.set('orderBy', orderBy.toLowerCase().replace(/\s/g, ''));
+      params = params.set('orderBy', orderBy.toLowerCase().replace(/\s/g, ''));
     }
     if (desc !== undefined) {
-        params = params.set('desc', desc.toString());
+      params = params.set('desc', desc.toString());
     }
     console.log("ENTRO SERVICIO");
     return this._http.get<APIResponse<Client>>(this._url, { params });
-}
+  }
+
+
+  deleteClient(id: number): Observable<APIResponse<Client>> {
+    return this._http.delete<APIResponse<Client>>(`${this._url}/${id}`)
+  }
+  getClient(id: number): Observable<APIResponse<Client>> {
+    return this._http.get<APIResponse<Client>>(`${this._url}/${id}`)
+  }
+  addClient(client: Client): Observable<APIResponse<Client>> {
+    return this._http.post<APIResponse<Client>>(this._url, client)
+  }
+  updateClient(client: Client) {
+    return this._http.patch<APIResponse<Client>>(this._url, client);
+  }
 }

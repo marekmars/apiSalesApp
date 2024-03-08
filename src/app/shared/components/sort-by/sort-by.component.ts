@@ -17,14 +17,20 @@ export class SortByComponent {
   constructor() {
     initFlowbite();
   }
+
   private _sortByService: SortByService = inject(SortByService);
   @Input() public sortBy: SortBy = {
     sort: SortByEnum.id,
     desc: 0
   };
+
   public selectedSort: SortByEnum = this.sortBy.sort;
   // Define el conjunto de valores permitidos
-  public allowedValues = [SortByEnum.id, SortByEnum.lastname, SortByEnum.date, SortByEnum.total];
+  public allowedValues: SortByEnum[] = [];
+  @Input() set allowedValuesArray(allowedValues: SortByEnum[]) {
+    this.allowedValues = allowedValues
+    this.updateSortValues();
+  }
 
   // Filtra las claves del enum basándote en el conjunto de valores permitidos
   public sortValues: { key: string, value: string }[] = Object.entries(SortByEnum)
@@ -43,6 +49,10 @@ export class SortByComponent {
     this.sortBy.desc = checkbox.target.checked ? 1 : 0
     this._sortByService.setCurrentPage(this.sortBy);
   }
-
+  private updateSortValues() {
+    this.sortValues = Object.entries(SortByEnum)
+      .filter(([key, value]) => this.allowedValues.includes(value))
+      .map(([key, value]) => ({ key, value }));
+  }
 
 }

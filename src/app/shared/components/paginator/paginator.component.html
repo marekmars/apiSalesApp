@@ -94,17 +94,7 @@
 
 
   <div class="flex  w-fit items-center z-10">
-    <shared-dropdown [dropdownValues]="rowsPerPageOptions" (selectedValueChange)="setItemsPerPage($event)"></shared-dropdown>
-
-    <!--  <form class="max-w-sm mx-auto" [formGroup]="itemsXPageForms">
-      <select formControlName="itemsXPage" (change)="setItemsPerPage()"
-        class=" bg-gray-50   text text-sm rounded-lg focus:ring-blue-500 focus:-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:-gray-600 dark:placeholder-gray-400 dark:text-gray-00 dark:focus:ring-blue-500 dark:focus:-blue-500">
-
-        @for (item of rowsPerPageOptions; track item;let f=$first) {
-        <option value="{{item}}" class="text" >{{item}}</option>
-        }
-      </select>
-    </form>-->
+    <shared-dropdown [dropdownValues]="rowsPerPageOptions" [selectedValue]="itemsPerPage" (selectedValueChange)="setItemsPerPage($event)"></shared-dropdown>
   </div>
 
 

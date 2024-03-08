@@ -20,4 +20,5 @@ export class PaginatorService {
     console.log("selectorpage ", page);
     this.pageSelectorSubject.next(page);
   }
+
 }

@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChild, ViewChildren, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren, inject, viewChild } from '@angular/core';
 import { initFlowbite } from 'flowbite';
+
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'shared-dropdown',
@@ -11,30 +13,37 @@ import { initFlowbite } from 'flowbite';
 })
 export class DropdownComponent implements AfterViewInit, OnInit {
   public id: string = this.generateID();
+
   @Input() public dropdownValues!: any[];
+  @Input() public selectedValue: any ;
   @Output() public selectedValueChange = new EventEmitter<any>();
 
-  public selectedValue: any;
+
+
+  // public selectedValue: any;
   constructor() {
 
   }
   ngOnInit(): void {
-
+    //  this.selectedValue = this.dropdownValues[0];
+    console.log('dropdownValues ', this.dropdownValues);
   }
   ngAfterViewInit(): void {
     initFlowbite();
-    setTimeout(() => {
-      this.selectedValue = this.dropdownValues[0];
-    });
+    // setTimeout(() => {
+    //   // Si hay un valor proporcionado desde el padre, úsalo como valor inicial
+    //   this.selectedValue = this.value || this.dropdownValues[0];
+    // });
   }
   selectValue(value: any) {
     this.selectedValue = value;
     console.log('selectValue ', value);
     this.selectedValueChange.emit(value);
-
   }
 
   generateID(): string {
     return 'id_' + Math.random().toString(36).substr(2, 9);
   }
+
+
 }
