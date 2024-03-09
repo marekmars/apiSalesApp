@@ -42,7 +42,7 @@ export class ProductService {
     return this._http.delete<APIResponse<Product>>(this._url + '/' + id);
   }
   updateProduct(product: Product): Observable<APIResponse<Product>> {
-    return this._http.put<APIResponse<Product>>(this._url + '/' + product.id, product);
+    return this._http.patch<APIResponse<Product>>(this._url,product);
   }
   addProduct(product: Product): Observable<APIResponse<Product>> {
     return this._http.post<APIResponse<Product>>(this._url, product);

@@ -35,7 +35,7 @@
                     <input formControlName="name"
                       [ngClass]="{'dark:text-red-500 dark:placeholder-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500': isFieldValid(productForm,'name') }"
                       class="w-full px-4 py-2.5 dark:bg-gray-800 dark:border-gray-800 dark:placeholder-gray-500 dark:text-gray-400  text-base text-gray-900 rounded-lg font-normal border border-gray-200"
-                      type="text" placeholder="Nvidia RTX 3080 Ti">
+                      type="text" placeholder="Product Name ...">
                     @if (isFieldValid(productForm,'name')) {
                     <p class="text-red-700 dark:text-red-500 mt-2">{{getFieldError(productForm,'name')}}</p>
                     }
@@ -49,14 +49,18 @@
                   <div class="w-full p-3 md:w-1/3">
                     <p class="text-base font-semibold text-gray-700 dark:text-gray-400"
                       [ngClass]="{ 'text-red-700 dark:text-red-500': isFieldValid(productForm,'description') }">
-                      Description
+                     Description <small>{{ "("+maxLengthTextArea+"/"+productForm.get('description')?.value?.length+")"}}</small>
+
                     </p>
                   </div>
                   <div class="w-full p-3 md:flex-1">
-                    <input formControlName="description"
+
+                    <textarea formControlName="description" rows="5" fixed OverlayScrollbarsComponent
                       [ngClass]="{'dark:text-red-500 dark:placeholder-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500': isFieldValid(productForm,'description') }"
                       class="w-full px-4 py-2.5 dark:bg-gray-800 dark:border-gray-800 dark:placeholder-gray-500 dark:text-gray-400  text-base text-gray-900 rounded-lg font-normal border border-gray-200"
-                      type="text" placeholder="Nvidia RTX 3080 Ti is the best gpu in the market...">
+                      type="text" placeholder="Product description ..." data-simplebar data-simplebar-auto-hide="false">
+                       <overlay-scrollbars [defer]="true" class=""></overlay-scrollbars>
+                   </textarea>
                     @if (isFieldValid(productForm,'description')) {
                     <p class="text-red-700 dark:text-red-500 mt-2">{{getFieldError(productForm,'description')}}</p>
                     }
@@ -87,9 +91,11 @@
               <div class="w-full">
                 <div class="flex flex-wrap w-full  justify-center">
                   <div class="w-full p-3 ">
-                    <label class="text-base font-semibold text-gray-800 dark:text-gray-400">Photo</label>
+                    <label class="text-base font-semibold text-gray-800 dark:text-gray-400">Photo <small>(5
+                        max)</small></label>
                   </div>
-                  <shared-drag-and-drop-img (filesChanged)="handleFileInput($event)" [limitFiles]="5"></shared-drag-and-drop-img>
+                  <shared-drag-and-drop-img (filesChanged)="handleFileInput($event)" (imgUrl)="deleteImg($event)"
+                    [imageUrlsAdded]="imageUrls" [filesAdded]="imagesFiles" [limitFiles]="imgLimit"></shared-drag-and-drop-img>
                 </div>
               </div>
             </div>

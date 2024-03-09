@@ -10,6 +10,7 @@ import { ImageUploadModel } from '../interfaces/image-upload-model.interfaces';
   providedIn: 'root'
 })
 export class ImageUploadService {
+
   private _imageCompress: NgxImageCompressService = inject(NgxImageCompressService);
   private _http: HttpClient = inject(HttpClient);
   private _url: string = environments.baseUrl + '/images';
@@ -51,6 +52,11 @@ export class ImageUploadService {
     return this._http.delete<APIResponse<any>>(`${this._url}/${id}`);
   }
 
+  deleteImagesByUrl(url: string) {
+    const deleteUrl = `${this._url}/deleteByUrl?url=${url}`;
+    console.log(deleteUrl);
+    return this._http.delete<APIResponse<any>>(deleteUrl);
+  }
   async getCompressedImage(image: File): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       const reader = new FileReader();

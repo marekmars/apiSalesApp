@@ -1,5 +1,6 @@
 export interface Image {
+  id?: number;
+  deleteHash: string;
   url: string;
-  id: number;
   productId?: number;
 }
