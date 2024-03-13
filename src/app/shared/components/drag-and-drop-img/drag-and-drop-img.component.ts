@@ -35,6 +35,7 @@ export class DragAndDropImgComponent {
   @Input() set imageUrlsAdded(imageUrls: string[]) {
     this.imageUrls = imageUrls;
   }
+  
   @Input() set limitFiles(limit: number) {
     this.limit = limit;
   }
@@ -103,7 +104,22 @@ export class DragAndDropImgComponent {
   }
 
   addFiles(event: Event): void {
+
     const input = event.target as HTMLInputElement;
+
+    const maxImages = this.limit - this.imageUrls.length;
+
+    if (input.files&&(maxImages === 0 || input.files.length > maxImages)) {
+      (async () => {
+        await this.toast.fire({
+          icon: 'info',
+          title: 'You have reached the maximum limit of files. Please delete some files to add more.',
+        })
+      })()
+
+      return;
+    }
+
     if (input.files) {
       const newFiles = Array.from(input.files) as File[];
       this.files = [...this.files, ...newFiles];

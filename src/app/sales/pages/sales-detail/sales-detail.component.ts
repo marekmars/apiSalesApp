@@ -72,12 +72,14 @@ export class SalesDetailComponent implements OnInit {
   constructor() {
     initFlowbite();
     this.saleForm = this._fb.group({
+      id: [0],
       date: [new Date(), [Validators.required, Validators.minLength(3)]],
       idClient: ['', [Validators.required, Validators.min(1)]],
       concepts: this._fb.array([], [Validators.required, Validators.min(1)]),
     })
 
     this.conceptForm = this._fb.group({
+      id: [0],
       quantity: [1, [Validators.required, Validators.min(1)]],
       unitaryPrice: [0, [Validators.required, Validators.min(0.01)]],
       idProduct: [0, [Validators.required, Validators.min(1)]],
@@ -110,6 +112,7 @@ export class SalesDetailComponent implements OnInit {
             this.client = this.sale.client as Client;
             this.clientName = `${this.client.lastName} ${this.client.name}`;
             this.submitButtonTxt = 'Update Sale';
+            console.log(this.saleForm.value);
           }
         }
       )
@@ -148,7 +151,7 @@ export class SalesDetailComponent implements OnInit {
   }
   searchProduct(search: string) {
     if (search.length > 0) {
-      this._productService.getProducts(undefined, 5, search, undefined, undefined).subscribe((res) => this.products = res.data);
+      this._productService.getProducts(undefined, 5, search, undefined, undefined).subscribe((res) => this.products = res.data.filter((product: Product) => product.stock > 0));
     } else {
       this.products = []
       this.productName = ''
@@ -164,8 +167,25 @@ export class SalesDetailComponent implements OnInit {
       return;
     }
     // Agregar el nuevo concepto al FormArray 'concepts'
-    this.concepts.push(this._createConceptFormGroup(this.conceptForm.value));
-    this.productName = ''
+    if (this.concepts.controls.some((control) => control.value.idProduct === this.conceptForm.value.idProduct)) {
+      const existingControl = this.concepts.controls.find((control) => control.value.idProduct === this.conceptForm.value.idProduct);
+      if (existingControl) {
+        existingControl.patchValue({
+          quantity: existingControl.value.quantity + this.conceptForm.get('quantity')?.value,
+        });
+      }
+
+    } else {
+      this.concepts.push(this._createConceptFormGroup(this.conceptForm.value));
+    }
+
+    this.productName = '';
+    this.conceptForm.reset({
+      quantity: 1,
+      unitaryPrice: 0,
+      idProduct: 0,
+      product: {},
+    });
 
   }
 
@@ -210,42 +230,63 @@ export class SalesDetailComponent implements OnInit {
     }
   }
 
-
-  onSubmit() {
-    if (this.saleForm.invalid) {
-      this.saleForm.markAllAsTouched();
-      return;
-    }
-    if (this.sale) {
-      this._saleService.updateSale(this.saleForm.value as Sale)
-        .subscribe({
-          next: (res) => {
-            Swal.fire({
-              title: this.notificationTitle,
-              text: this.notificationDescription,
-              confirmButtonColor: "#4c822a",
-              icon: "success",
-              customClass: {
-                popup: 'swal2-dark',
-              }
-            }).then(() => {
-              this._router.navigate(['/sales']);
-            });
-          },
-          error: (err) => {
-            // Handle error
+  handleUpdate() {
+    this._saleService.updateSale(this.saleForm.value as Sale)
+      .subscribe({
+        next: (res) => {
+          console.log(res.message);
+          if(res.success===0){
             Swal.fire({
               title: "Error",
-              text: "The sale could not be updated",
+              text: "The sale could not be updated due to an internal server error " + res.message,
               confirmButtonColor: "#4c822a",
               icon: "error",
               customClass: {
                 popup: 'swal2-dark',
               }
             })
+            return
           }
-        });
-    }
+          Swal.fire({
+            title: this.notificationTitle,
+            text: this.notificationDescription,
+            confirmButtonColor: "#4c822a",
+            icon: "success",
+            customClass: {
+              popup: 'swal2-dark',
+            }
+          }).then(() => {
+            //         const conceptsFormArray = this.saleForm.get('concepts') as FormArray;
+            // conceptsFormArray.clear();
+
+            // this.resetForms();
+            // this.selectedDate = new Date();
+            // this.clientName = '';
+            // this.productName = '';
+            // this.client = null;
+            // this.product = null;
+
+            // this._datePickerService.resetToDateToday();
+            this._router.navigate(['/sales']);
+
+          });
+        },
+        error: (err) => {
+
+          // Handle error
+          Swal.fire({
+            title: "Error",
+            text: "The sale could not be updated",
+            confirmButtonColor: "#4c822a",
+            icon: "error",
+            customClass: {
+              popup: 'swal2-dark',
+            }
+          })
+        }
+      });
+  }
+  handleAdd() {
     this._saleService.addSale(this.saleForm.value as Sale).subscribe({
       next: (res) => {
         Swal.fire({
@@ -273,23 +314,28 @@ export class SalesDetailComponent implements OnInit {
         })
       }
     })
+  }
+
+  onSubmit() {
+
+    if (this.saleForm.invalid) {
+      this.saleForm.markAllAsTouched();
+      return;
+    }
+    if (this.sale) {
+      console.log(this.saleForm.value);
+      this.handleUpdate();
+    }else{
+      this.handleAdd();
+    }
+
     // Limpia el FormArray 'concepts'
-    const conceptsFormArray = this.saleForm.get('concepts') as FormArray;
-    conceptsFormArray.clear();
 
-    this.resetForms();
-    this.selectedDate = new Date();
-    this.clientName = '';
-    this.productName = '';
-    this.client = null;
-    this.product = null;
-
-    this._datePickerService.resetToDateToday();
 
 
   }
   openDialog() {
-    if(this.saleForm.invalid){
+    if (this.saleForm.invalid) {
       this.saleForm.markAllAsTouched();
       return
     }
@@ -355,6 +401,7 @@ export class SalesDetailComponent implements OnInit {
   }
 
   removeConcept($index: number) {
+
     this.concepts.removeAt($index);
   }
   resetForms() {

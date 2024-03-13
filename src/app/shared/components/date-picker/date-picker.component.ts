@@ -92,6 +92,7 @@ export class DatePickerComponent {
   getDateValue(date: any) {
     let selectedDate = new Date(this.year, this.month, date);
     this.datepickerValue = selectedDate.toDateString();
+
     this.dateEmiter.emit(selectedDate)
     this.showDatepicker = false;
   }

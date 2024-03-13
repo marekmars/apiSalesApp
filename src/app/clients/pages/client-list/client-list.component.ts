@@ -88,7 +88,7 @@ export class ClientListComponent implements OnInit, OnDestroy {
 
   public searchValue: string = '';
   public allowedValuesArray: SortByEnum[] = [
-    SortByEnum.id, SortByEnum.lastname, SortByEnum.name, SortByEnum.idcard, SortByEnum.email
+    SortByEnum.id, SortByEnum.lastname, SortByEnum.name, SortByEnum.idcard, SortByEnum.mail
   ]
 
   ngOnInit(): void {

@@ -72,7 +72,7 @@ export class SalesListComponent implements OnInit, OnDestroy {
     },
   ];
   public allowedValuesArray: SortByEnum[] = [
-    SortByEnum.id, SortByEnum.lastname, SortByEnum.date, SortByEnum.total,SortByEnum.name
+    SortByEnum.id, SortByEnum.lastname, SortByEnum.date, SortByEnum.total,SortByEnum.name,SortByEnum.mail,SortByEnum.idcard
   ]
   public placeholder: string = 'Search...';
   public desc: number = 0

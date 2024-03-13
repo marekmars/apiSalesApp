@@ -36,7 +36,6 @@ export class ProductService {
   }
   getProduct(id: number): Observable<APIResponse<Product>> {
     return this._http.get<APIResponse<Product>>(this._url + '/' + id);
-
   }
   deleteProduct(id: number): Observable<APIResponse<Product>> {
     return this._http.delete<APIResponse<Product>>(this._url + '/' + id);

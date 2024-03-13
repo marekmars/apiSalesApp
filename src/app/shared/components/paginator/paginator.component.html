@@ -1,5 +1,10 @@
 <nav aria-label="Page navigation example" class="mt-4 flex justify-center w-full flex-wrap gap-5 ngcl z-10"
   [ngClass]="{'hidden': totalItems <= 0}">
+  <span class="text-sm text-gray-700 dark:text-gray-400 w-screen text-center">
+    Showing <span class="font-semibold text-gray-900 dark:text-white">{{currentPage*itemsPerPage - itemsPerPage==0 ? 1 : currentPage*itemsPerPage - itemsPerPage}}</span> to <span
+      class="font-semibold text-gray-900 dark:text-white">{{ (currentPage * itemsPerPage) < totalItems ? (currentPage * itemsPerPage) : totalItems }}</span> of <span
+      class="font-semibold text-gray-900 dark:text-white">{{totalItems}}</span> Entries
+  </span>
   <ul class="flex items-center  h-12 text-base z-10" [ngClass]="{'hidden': totalItems <= itemsPerPage}">
     <li>
       <a [ngClass]="{
@@ -92,9 +97,9 @@
     </li>
   </ul>
 
-
   <div class="flex  w-fit items-center z-10">
-    <shared-dropdown [dropdownValues]="rowsPerPageOptions" [selectedValue]="itemsPerPage" (selectedValueChange)="setItemsPerPage($event)"></shared-dropdown>
+    <shared-dropdown [dropdownValues]="rowsPerPageOptions" [selectedValue]="itemsPerPage"
+      (selectedValueChange)="setItemsPerPage($event)"></shared-dropdown>
   </div>
 
 

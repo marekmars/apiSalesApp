@@ -1,36 +1,31 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { DragAndDropImgComponent } from '../../../shared/components/drag-and-drop-img/drag-and-drop-img.component';
+import { NumberInputComponent } from '../../../shared/components/number-input/number-input.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { initFlowbite } from 'flowbite';
-import { firstValueFrom, switchMap } from 'rxjs';
+import { switchMap, firstValueFrom } from 'rxjs';
 import Swal from 'sweetalert2';
-import { Product } from '../../interfaces/products.interfaces';
-import { Image } from "../../interfaces/images.interface";
-import { ProductService } from '../../services/products.service';
-import { CommonModule } from '@angular/common';
-import { NumberInputComponent } from '../../../shared/components/number-input/number-input.component';
-import { DragAndDropImgComponent } from "../../../shared/components/drag-and-drop-img/drag-and-drop-img.component";
-
-import { ImageUploadService } from '../../services/image-upload.service';
-
+import { ImageUploadService } from '../../../products/services/image-upload.service';
+import { User } from '../../interfaces/user.iterfaces';
+import { UserService } from '../../services/user.service';
+import { Image } from '../../../products/interfaces/images.interface';
 
 @Component({
-  selector: 'app-products-detail',
+  selector: 'app-users-detail',
   standalone: true,
-  templateUrl: './products-detail.component.html',
-  styleUrl: './products-detail.component.css',
-  imports: [
-    CommonModule,
+  imports: [ CommonModule,
     ReactiveFormsModule,
     NumberInputComponent,
-    DragAndDropImgComponent,
-
-  ]
+    DragAndDropImgComponent,],
+  templateUrl: './users-detail.component.html',
+  styleUrl: './users-detail.component.css'
 })
-export class ProductsDetailComponent implements OnInit {
+export class UsersDetailComponent implements OnInit {
 
   private _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private _productService: ProductService = inject(ProductService);
+  private _userService: UserService = inject(UserService);
   private _fb: FormBuilder = inject(FormBuilder);
   private _router: Router = inject(Router);
   private _imageUploadService: ImageUploadService = inject(ImageUploadService);
@@ -44,25 +39,25 @@ export class ProductsDetailComponent implements OnInit {
   public cancelBtnTxt: string = '';
   public notificationTitle: string = '';
   public notificationDescription: string = '';
-  public product: Product | null = null;
+  public user: User | null = null;
   public imageUrls: string[] = [];
-  public imgLimit: number = 5;
-  public productForm: FormGroup = this._fb.group({
+  public imgLimit: number = 1;
+  public userForm: FormGroup = this._fb.group({
 
   });
-  public submitButtonTxt: string = 'Add Product';
+  public submitButtonTxt: string = 'Add User';
 
   constructor() {
     initFlowbite();
-    this.productForm = this._fb.group({
+    this.userForm = this._fb.group({
       id: [0],
-      name: ['', [Validators.required, Validators.minLength(5),]],
-      description: ['', [Validators.minLength(5), Validators.maxLength(this.maxLengthTextArea)]],
-      unitaryPrice: [1, [Validators.required, Validators.min(5)]],
-      cost: [1, [Validators.required, Validators.min(5)]],
-      stock: [1, [Validators.required, Validators.min(5)]],
-      images: this._fb.array([]),
-
+      idRole: [0, [Validators.required, Validators.min(1),]],
+      mail: ['', [Validators.minLength(5), Validators.email]],
+      password: ['', [Validators.minLength(5)]],
+      name: ['', [Validators.required, Validators.min(1)]],
+      lastName: ['', [Validators.required, Validators.min(1)]],
+      idCard: ['', [Validators.required, Validators.min(1),]],
+      avatar: [''],
     })
 
 
@@ -73,9 +68,7 @@ export class ProductsDetailComponent implements OnInit {
       .pipe(
         switchMap((params) => {
           if (params.hasOwnProperty('id')) {
-
-            return this._productService.getProduct(params['id'])
-
+            return this._userService.getUserById(params['id'])
           }
           return [];
         }
@@ -84,12 +77,12 @@ export class ProductsDetailComponent implements OnInit {
       )
       .subscribe(
         (res) => {
-          this.product = res.data[0];
-          if (this.product) {
-            this.productForm.patchValue(this.product);
-            this.imageUrls = this.product?.images?.map(image => image.url) ?? [];
+          this.user = res.data[0];
+          if (this.user) {
+            this.userForm.patchValue(this.user);
+            this.imageUrls = this.user?.avatar ? [this.user.avatar.url] : [];
             // this.imgLimit = this.imgLimit - this.imageUrls.length;
-            this.submitButtonTxt = 'Update Product';
+            this.submitButtonTxt = 'Update User';
           }
         }
       )
@@ -108,15 +101,15 @@ export class ProductsDetailComponent implements OnInit {
         case 'email': return `The value must be a valid email`;
         default: break;
       }
-      if (field === "idProduct" && error['required']) {
-        return "You need to add at least one product to the list";
+      if (field === "idUser" && error['required']) {
+        return "You need to add at least one user to the list";
       }
     }
     return "";
 
   }
   get images() {
-    return this.productForm.get('images') as FormArray
+    return this.userForm.get('images') as FormArray
   }
 
   isFieldValid(form: FormGroup, field: string): boolean | null {
@@ -141,7 +134,7 @@ export class ProductsDetailComponent implements OnInit {
         }
       })
     })
-    console.log(this.productForm.value);
+    console.log(this.userForm.value);
     Promise.all(uploadObservables.map(obs => firstValueFrom(obs)))
       .then((results) => {
         results.forEach((res: any) => {
@@ -151,9 +144,9 @@ export class ProductsDetailComponent implements OnInit {
           };
           console.log(res);
           this.images.push(this._fb.control(img));
-          console.log(this.productForm.value);
+          console.log(this.userForm.value);
         });
-        this._productService.updateProduct(this.productForm.value as Product).subscribe({
+        this._userService.updateUser(this.userForm.value as User).subscribe({
           next: (res) => {
             Swal.fire({
               title: this.notificationTitle,
@@ -164,7 +157,7 @@ export class ProductsDetailComponent implements OnInit {
                 popup: 'swal2-dark',
               }
             }).then(() => {
-              this._router.navigate(['/products']);
+              this._router.navigate(['/users']);
             })
           },
           error: (err) => {
@@ -214,7 +207,7 @@ export class ProductsDetailComponent implements OnInit {
           };
           this.images.push(this._fb.control(img));
         });
-        this._productService.addProduct(this.productForm.value as Product).subscribe({
+        this._userService.addUser(this.userForm.value as User).subscribe({
           next: (res) => {
             console.log(res);
             Swal.fire({
@@ -226,7 +219,7 @@ export class ProductsDetailComponent implements OnInit {
                 popup: 'swal2-dark',
               }
             }).then(() => {
-              this._router.navigate(['/products']);
+              this._router.navigate(['/users']);
             });
           },
           error: (err) => {
@@ -263,38 +256,41 @@ export class ProductsDetailComponent implements OnInit {
   }
   onSubmit() {
 
-    if (this.productForm.invalid) {
-      this.productForm.markAllAsTouched();
-      return;
-    }
-    if (this.product) {
+    // if (this.userForm.invalid) {
+    //   this.userForm.markAllAsTouched();
+    //   return;
+    // }
+    if (this.user) {
       this.handdleUpdate();
     } else {
       this.handdleAdd();
     }
 
 
+
+
+
   }
   openDialog() {
-    if (this.productForm.invalid) {
-      this.productForm.markAllAsTouched();
-      return
-    }
-    if (this.product) {
-      this.title = 'Update Product'
-      this.description = 'Are you sure you want to update this product?'
+    // if (this.userForm.invalid) {
+    //   this.userForm.markAllAsTouched();
+    //   return
+    // }
+    if (this.user) {
+      this.title = 'Update User'
+      this.description = 'Are you sure you want to update this user?'
       this.okBtnTxt = 'Yes, update it!'
       this.cancelBtnTxt = 'Cancel'
-      this.notificationTitle = 'Product updated'
-      this.notificationDescription = 'The product has been updated successfully'
+      this.notificationTitle = 'User updated'
+      this.notificationDescription = 'The user has been updated successfully'
 
     } else {
-      this.title = 'Add Product'
-      this.description = 'Are you sure you want to add this product?'
+      this.title = 'Add User'
+      this.description = 'Are you sure you want to add this user?'
       this.okBtnTxt = 'Yes, add it!'
       this.cancelBtnTxt = 'Cancel'
-      this.notificationTitle = 'Product added'
-      this.notificationDescription = 'The product has been added successfully'
+      this.notificationTitle = 'User added'
+      this.notificationDescription = 'The user has been added successfully'
     }
 
     Swal.fire({
@@ -317,15 +313,16 @@ export class ProductsDetailComponent implements OnInit {
 
   resetForms() {
 
-    if (this.product) {
-      this.productForm.reset({
-        id: [this.product.id, [Validators.required, Validators.min(1)]],
-        name: [this.product.name, [Validators.required, Validators.minLength(5)]],
-        unitaryPrice: [this.product.unitaryPrice, [Validators.required, Validators.min(5)]],
-        description: ['', [Validators.minLength(5), Validators.maxLength(this.maxLengthTextArea)]],
-        cost: [this.product.cost, [Validators.required, Validators.min(5)]],
-        stock: [this.product.stock, [Validators.required, Validators.min(5)]],
-        images: this._fb.array([]),
+    if (this.user) {
+      this.userForm.reset({
+        id: [0],
+        idRole: [0, [Validators.required, Validators.min(1),]],
+        mail: ['', [Validators.minLength(5), Validators.email]],
+        password: ['', [Validators.minLength(5)]],
+        name: ['', [Validators.required, Validators.min(1)]],
+        lastName: ['', [Validators.required, Validators.min(1)]],
+        idCard: ['', [Validators.required, Validators.min(1),]],
+        avatar: [''],
       })
       return;
     }
@@ -335,7 +332,7 @@ export class ProductsDetailComponent implements OnInit {
   //#endregion
   //#region Other Methods
   public cancel() {
-    this._router.navigate(['/products'])
+    this._router.navigate(['/users'])
   }
   //#endregion
   //#region Private Methods

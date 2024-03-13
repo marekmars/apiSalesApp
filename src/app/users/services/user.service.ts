@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environments } from '../../../environments/environments';
 import { Observable } from 'rxjs/internal/Observable';
@@ -17,13 +17,23 @@ export class UserService {
     const url = this._url + `/${id}`;
     return this._http.get<APIResponse<User>>(url);
   }
+  getUser(id: number): Observable<APIResponse<User>> {
+    return this._http.get<APIResponse<User>>(this._url + '/' + id);
+  }
   public getUserInfo(token: string): Observable<APIResponse<User>> {
     const decodedToken: any = jwtDecode(token);
     const userId: number = decodedToken.nameid;
     return this.getUserById(userId)
   }
-  public getUsers(): Observable<APIResponse<User[]>> {
-    return this._http.get<APIResponse<User[]>>(this._url);
+
+  public getUsers(skip: number = 0, take: number, filter: string | undefined, orderBy: string | undefined, desc: number): Observable<APIResponse<User>> {
+    const params = new HttpParams()
+      .set('skip', skip.toString())
+      .set('limit', take.toString())
+      .set('filter', filter ? filter : '')
+      .set('orderBy', orderBy ? orderBy.toLowerCase().replace(/\s/g, '') : '')
+      .set('desc', desc);
+    return this._http.get<APIResponse<User>>(this._url, { params });
   }
   public addUser(user: User): Observable<APIResponse<User>> {
     return this._http.post<APIResponse<User>>(this._url, user)

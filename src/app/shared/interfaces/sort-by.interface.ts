@@ -10,10 +10,10 @@ export enum SortByEnum {
   state = 'state',
   name = 'name',
   lastname = 'last name',
-  email = 'email',
+  mail = 'mail',
   idcard = 'id card',
   price = 'price',
   cost = 'cost',
   stock = 'stock',
-  rol = 'rol'
+  role = 'role'
 }
