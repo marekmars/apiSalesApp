@@ -5,7 +5,7 @@ import { SortByService } from '../../../shared/components/sort-by/services/sort-
 import { Subscription, catchError, of, tap } from 'rxjs';
 import { SortBy, SortByEnum } from '../../../shared/interfaces/sort-by.interface';
 import { TableColumn, TableComponent } from '../../../shared/components/table/table.component';
-import { User } from '../../interfaces/user.iterfaces';
+import { User } from '../../interfaces/user.interfaces';
 import { APIResponse } from '../../../shared/interfaces/api-response.interfaces';
 import { ActionValue } from '../../../shared/interfaces/action-values.interfaces';
 import Swal from 'sweetalert2';
@@ -15,6 +15,7 @@ import { SkeletonTableComponent } from "../../../shared/components/skeleton-view
 import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-users',
@@ -33,7 +34,7 @@ import { RouterLink } from '@angular/router';
 })
 export class UsersListComponent implements OnInit, OnDestroy {
 
-
+  private _authService: AuthService = inject(AuthService);
   private _productService: UserService = inject(UserService)
   private _paginatorService: PaginatorService = inject(PaginatorService);
   private _sortByService: SortByService = inject(SortByService);
@@ -45,7 +46,8 @@ export class UsersListComponent implements OnInit, OnDestroy {
     sort: SortByEnum.id,
     desc: 0
   };
-
+  public showDelete: boolean = false;
+  public currentUser: User | null = null;
   public title: string = 'Users';
   public description: string = '';
   public okBtnTxt: string = '';
@@ -96,6 +98,12 @@ export class UsersListComponent implements OnInit, OnDestroy {
   ]
 
   ngOnInit(): void {
+    this._authService.userObservable.subscribe((user) => {
+      this.currentUser = user
+      if (this.currentUser?.role?.name === 'Admin') {
+        this.showDelete = true
+      }
+    })
     this._currentPageSubscription = this._paginatorService.currentPage$.subscribe(
       (page) => {
         this.currentPage = page

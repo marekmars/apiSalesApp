@@ -28,30 +28,28 @@
 
           <button id="dropdownInformationButton" data-dropdown-toggle="dropdownInformation"
             class=" font-medium rounded-lg text-sm  text-center inline-flex items-center  " type="button">
-            <img class="w-8 h-8 rounded bg-gray-400" src="/assets/defaultAvatar.svg" alt="Default avatar">
+            <img class="w-8 h-8 rounded bg-gray-400" [src]="avatar" alt="Avatar">
           </button>
 
           <!-- Dropdown menu -->
           <div id="dropdownInformation"
             class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
             <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
-              <div>{{user?.name + ' ' + user?.lastName}}</div>
-              <div class="font-medium truncate">{{user?.mail}}</div>
+              <div>{{currentUser?.name + ' ' + currentUser?.lastName}}</div>
+              <div class="font-medium truncate">{{currentUser?.mail}}</div>
             </div>
             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownInformationButton">
               @for (item of menuItems; track item) {
               <li>
                 <img src="{{item.icon}}" alt="">
                 <a [routerLink]="[item.path]"
-                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{{item.label}}</a>
+                  class="cursor-pointer block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{{item.label}}</a>
               </li>
               }
-
-
             </ul>
             <div class="py-2">
-              <a class="cursor-pointer" data-modal-target="popup-modal" data-modal-toggle="popup-modal"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign
+              <a data-modal-target="popup-modal" data-modal-toggle="popup-modal"
+                class="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign
                 out</a>
             </div>
           </div>

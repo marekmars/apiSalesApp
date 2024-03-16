@@ -16,6 +16,8 @@ import { SkeletonTableComponent } from "../../../shared/components/skeleton-view
 import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
 import { ProductService } from '../../services/products.service';
 import { Product } from '../../interfaces/products.interfaces';
+import { User } from '../../../users/interfaces/user.interfaces';
+import { AuthService } from '../../../auth/services/auth.service';
 
 
 
@@ -29,7 +31,7 @@ import { Product } from '../../interfaces/products.interfaces';
 })
 export class ProductsListComponent implements OnInit, OnDestroy {
 
-
+  private _authService: AuthService = inject(AuthService);
   private _productService: ProductService = inject(ProductService)
   private _paginatorService: PaginatorService = inject(PaginatorService);
   private _sortByService: SortByService = inject(SortByService);
@@ -42,6 +44,8 @@ export class ProductsListComponent implements OnInit, OnDestroy {
     desc: 0
   };
 
+  public showDelete: boolean = false;
+  public currentUser: User | null = null;
   public title: string = 'Sales';
   public description: string = '';
   public okBtnTxt: string = '';
@@ -89,6 +93,15 @@ export class ProductsListComponent implements OnInit, OnDestroy {
   ]
 
   ngOnInit(): void {
+    this._authService.userObservable.subscribe((user) => {
+      this.currentUser = user
+      if (this.currentUser?.role?.name === 'Admin') {
+        this.showDelete = true
+      }
+    })
+    if (this.currentUser?.role?.name === 'Admin') {
+      this.showDelete = true
+    }
     this._currentPageSubscription = this._paginatorService.currentPage$.subscribe(
       (page) => {
         this.currentPage = page

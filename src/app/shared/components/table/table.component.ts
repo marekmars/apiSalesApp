@@ -22,7 +22,7 @@ export class TableComponent {
   public columns: TableColumn[] = []
   public dataSource: any[] = []
   public routerLink: string = ''
-
+  public showDelete: boolean = false
   private _router: Router = inject(Router)
 
   @Input() set tableData(value: any[]) {
@@ -36,6 +36,9 @@ export class TableComponent {
   }
   @Input() set tableRouterLink(value: string) {
     this.routerLink = value;
+  }
+  @Input() set tableShowDelete(value: boolean) {
+    this.showDelete = value;
   }
   @Output() action = new EventEmitter<ActionValue<any>>()
 

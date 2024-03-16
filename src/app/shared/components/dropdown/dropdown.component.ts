@@ -26,7 +26,7 @@ export class DropdownComponent implements AfterViewInit, OnInit {
   }
   ngOnInit(): void {
     //  this.selectedValue = this.dropdownValues[0];
-    console.log('dropdownValues ', this.dropdownValues);
+
   }
   ngAfterViewInit(): void {
     initFlowbite();
@@ -37,7 +37,7 @@ export class DropdownComponent implements AfterViewInit, OnInit {
   }
   selectValue(value: any) {
     this.selectedValue = value;
-    console.log('selectValue ', value);
+
     this.selectedValueChange.emit(value);
   }
 

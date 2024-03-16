@@ -17,6 +17,8 @@ import { SortBy, SortByEnum } from '../../../shared/interfaces/sort-by.interface
 import { ClientService } from '../../services/clients.service';
 import { Client } from '../../interfaces/clients.interface';
 import { RouterLink } from '@angular/router';
+import { User } from '../../../users/interfaces/user.interfaces';
+import { AuthService } from '../../../auth/services/auth.service';
 
 
 @Component({
@@ -27,8 +29,7 @@ import { RouterLink } from '@angular/router';
   imports: [SkeletonTableComponent, SearchBarComponent, SortByComponent, TableComponent, PaginatorComponent, CommonModule,RouterLink]
 })
 export class ClientListComponent implements OnInit, OnDestroy {
-
-
+  private _authService: AuthService = inject(AuthService);
   private _clientsService: ClientService = inject(ClientService)
   private _paginatorService: PaginatorService = inject(PaginatorService);
   private _sortByService: SortByService = inject(SortByService);
@@ -40,8 +41,9 @@ export class ClientListComponent implements OnInit, OnDestroy {
     sort: SortByEnum.id,
     desc: 0
   };
-
-  public title: string = 'Sales';
+  public showDelete: boolean = false;
+  public currentUser: User | null = null;
+  public title: string = 'Clients';
   public description: string = '';
   public okBtnTxt: string = '';
   public cancelBtnTxt: string = '';
@@ -92,6 +94,14 @@ export class ClientListComponent implements OnInit, OnDestroy {
   ]
 
   ngOnInit(): void {
+
+    this._authService.userObservable.subscribe((user) => {
+      this.currentUser = user
+      if (this.currentUser?.role?.name === 'Admin') {
+        this.showDelete = true
+      }
+    })
+
     this._currentPageSubscription = this._paginatorService.currentPage$.subscribe(
       (page) => {
         this.currentPage = page

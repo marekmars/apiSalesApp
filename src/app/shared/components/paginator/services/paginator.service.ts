@@ -15,7 +15,7 @@ export class PaginatorService {
     console.log("page ", page);
     this.currentPageSubject.next(page);
   }
-
+  
   setPageSelector(page: number): void {
     console.log("selectorpage ", page);
     this.pageSelectorSubject.next(page);

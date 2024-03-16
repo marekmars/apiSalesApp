@@ -18,7 +18,7 @@
 <shared-skeleton-table></shared-skeleton-table>
 }@else {
 <shared-table [tableTitle]="'Products'" [tableColumns]="columns" [tableData]="tableItems" [tableRouterLink]="'products/detail'"
-  (action)="doAction($event)" ></shared-table>
+  (action)="doAction($event)" [tableShowDelete]="showDelete"></shared-table>
 }
 <shared-paginator [totalItems]="totalItems" [rowsPerPageOptions]="itemsPerPageOptions" ></shared-paginator>
 

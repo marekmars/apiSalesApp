@@ -18,6 +18,8 @@ import { RouterLink } from '@angular/router';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import Swal from 'sweetalert2';
 import { TableColumn, TableComponent } from "../../../shared/components/table/table.component";
+import { User } from '../../../users/interfaces/user.interfaces';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   standalone: true,
@@ -33,14 +35,15 @@ import { TableColumn, TableComponent } from "../../../shared/components/table/ta
 })
 
 export class SalesListComponent implements OnInit, OnDestroy {
-
-
+  private _authService: AuthService = inject(AuthService);
   private _salesService: SalesService = inject(SalesService)
   private _paginatorService: PaginatorService = inject(PaginatorService);
   private _sortByService: SortByService = inject(SortByService);
   private _currentPageSubscription!: Subscription
   private _pageSelectorSubscription!: Subscription
   private _sortBySubscription!: Subscription
+
+  public currentUser: User | null = null;
 
   public sortBy: SortBy = {
     sort: SortByEnum.id,
@@ -72,7 +75,7 @@ export class SalesListComponent implements OnInit, OnDestroy {
     },
   ];
   public allowedValuesArray: SortByEnum[] = [
-    SortByEnum.id, SortByEnum.lastname, SortByEnum.date, SortByEnum.total,SortByEnum.name,SortByEnum.mail,SortByEnum.idcard
+    SortByEnum.id, SortByEnum.lastname, SortByEnum.date, SortByEnum.total, SortByEnum.name, SortByEnum.mail, SortByEnum.idcard
   ]
   public placeholder: string = 'Search...';
   public desc: number = 0
@@ -92,8 +95,15 @@ export class SalesListComponent implements OnInit, OnDestroy {
   }
 
   public searchValue: string = '';
-
+  public showDelete: boolean = false;
   ngOnInit(): void {
+    this._authService.userObservable.subscribe((user) => {
+      this.currentUser = user
+      if (this.currentUser?.role?.name === 'Admin') {
+        this.showDelete = true
+      }
+    })
+
     this._currentPageSubscription = this._paginatorService.currentPage$.subscribe(
       (page) => {
         this.currentPage = page

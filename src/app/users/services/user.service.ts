@@ -3,8 +3,10 @@ import { Injectable, inject } from '@angular/core';
 import { environments } from '../../../environments/environments';
 import { Observable } from 'rxjs/internal/Observable';
 import { APIResponse } from '../../shared/interfaces/api-response.interfaces';
-import { User } from '../interfaces/user.iterfaces';
+import { Role, User } from '../interfaces/user.interfaces';
 import { jwtDecode } from 'jwt-decode';
+import { of } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
@@ -20,10 +22,11 @@ export class UserService {
   getUser(id: number): Observable<APIResponse<User>> {
     return this._http.get<APIResponse<User>>(this._url + '/' + id);
   }
-  public getUserInfo(token: string): Observable<APIResponse<User>> {
-    const decodedToken: any = jwtDecode(token);
-    const userId: number = decodedToken.nameid;
-    return this.getUserById(userId)
+
+
+
+  public getCurrentUser(token:string): Observable<APIResponse<User>> {
+    return this._http.get<APIResponse<User>>(`${this._url}/current`, { headers: { Authorization: `Bearer ${token}` } })
   }
 
   public getUsers(skip: number = 0, take: number, filter: string | undefined, orderBy: string | undefined, desc: number): Observable<APIResponse<User>> {
@@ -39,10 +42,13 @@ export class UserService {
     return this._http.post<APIResponse<User>>(this._url, user)
   }
   public updateUser(user: User): Observable<APIResponse<User>> {
-    return this._http.put<APIResponse<User>>(this._url, user)
+    return this._http.patch<APIResponse<User>>(this._url, user)
   }
   public deleteUser(id: number): Observable<APIResponse<User>> {
     const url = this._url + `/${id}`;
     return this._http.delete<APIResponse<User>>(url)
+  }
+  public getRoles(): Observable<APIResponse<any>> {
+    return this._http.get<APIResponse<any>>(`${environments.baseUrl}/roles`)
   }
 }

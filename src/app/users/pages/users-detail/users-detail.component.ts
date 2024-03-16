@@ -8,19 +8,20 @@ import { initFlowbite } from 'flowbite';
 import { switchMap, firstValueFrom } from 'rxjs';
 import Swal from 'sweetalert2';
 import { ImageUploadService } from '../../../products/services/image-upload.service';
-import { User } from '../../interfaces/user.iterfaces';
+import { Role, User } from '../../interfaces/user.interfaces';
 import { UserService } from '../../services/user.service';
 import { Image } from '../../../products/interfaces/images.interface';
+import { DropdownComponent } from "../../../shared/components/dropdown/dropdown.component";
 
 @Component({
   selector: 'app-users-detail',
   standalone: true,
-  imports: [ CommonModule,
+  templateUrl: './users-detail.component.html',
+  styleUrl: './users-detail.component.css',
+  imports: [CommonModule,
     ReactiveFormsModule,
     NumberInputComponent,
-    DragAndDropImgComponent,],
-  templateUrl: './users-detail.component.html',
-  styleUrl: './users-detail.component.css'
+    DragAndDropImgComponent, DropdownComponent]
 })
 export class UsersDetailComponent implements OnInit {
 
@@ -42,10 +43,15 @@ export class UsersDetailComponent implements OnInit {
   public user: User | null = null;
   public imageUrls: string[] = [];
   public imgLimit: number = 1;
+  public roles: Role[] = []
+  public rolesNames: string[] = []
+
+  public selectedRoleName: string = '';
   public userForm: FormGroup = this._fb.group({
 
   });
   public submitButtonTxt: string = 'Add User';
+
 
   constructor() {
     initFlowbite();
@@ -53,7 +59,7 @@ export class UsersDetailComponent implements OnInit {
       id: [0],
       idRole: [0, [Validators.required, Validators.min(1),]],
       mail: ['', [Validators.minLength(5), Validators.email]],
-      password: ['', [Validators.minLength(5)]],
+      password: [null, [Validators.minLength(5)]],
       name: ['', [Validators.required, Validators.min(1)]],
       lastName: ['', [Validators.required, Validators.min(1)]],
       idCard: ['', [Validators.required, Validators.min(1),]],
@@ -63,7 +69,18 @@ export class UsersDetailComponent implements OnInit {
 
   }
   ngOnInit(): void {
-
+    this._userService.getRoles().subscribe(
+      (res) => {
+        this.roles = res.data;
+        this.userForm.patchValue({
+          idRole: this.roles[0].id
+        })
+        res.data.forEach((role: Role) => {
+          this.rolesNames.push(role.name);
+        })
+        this.selectedRoleName = this.rolesNames[0];
+      }
+    )
     this._activatedRoute.params
       .pipe(
         switchMap((params) => {
@@ -79,13 +96,23 @@ export class UsersDetailComponent implements OnInit {
         (res) => {
           this.user = res.data[0];
           if (this.user) {
+            this.user.password = undefined
             this.userForm.patchValue(this.user);
+            this.selectedRoleName = this.user.role?.name ?? this.rolesNames[0];
+
+            console.log(this.user)
             this.imageUrls = this.user?.avatar ? [this.user.avatar.url] : [];
             // this.imgLimit = this.imgLimit - this.imageUrls.length;
             this.submitButtonTxt = 'Update User';
           }
         }
       )
+  }
+  setRole(roleName: string) {
+    const selectedRole = this.roles.find((r) => r.name === roleName);
+    this.userForm.patchValue({
+      idRole: selectedRole?.id
+    })
   }
 
   getFieldError(form: FormGroup, field: string): string | null {
@@ -108,9 +135,7 @@ export class UsersDetailComponent implements OnInit {
     return "";
 
   }
-  get images() {
-    return this.userForm.get('images') as FormArray
-  }
+
 
   isFieldValid(form: FormGroup, field: string): boolean | null {
     return form.controls[field].errors && form.controls[field].touched;
@@ -127,24 +152,19 @@ export class UsersDetailComponent implements OnInit {
       this._imageUploadService.uploadImg(file)
     );
 
-    this.imagesToDelete.forEach(image => {
-      this._imageUploadService.deleteImagesByUrl(image).subscribe({
-        next: (res) => {
-          console.log(res);
-        }
-      })
-    })
+
     console.log(this.userForm.value);
     Promise.all(uploadObservables.map(obs => firstValueFrom(obs)))
       .then((results) => {
         results.forEach((res: any) => {
+          console.log(res);
           const img: Image = {
             url: res.data[0].data.link,
             deleteHash: res.data[0].data.deletehash
           };
-          console.log(res);
-          this.images.push(this._fb.control(img));
-          console.log(this.userForm.value);
+          this.userForm.patchValue({
+            avatar: img
+          })
         });
         this._userService.updateUser(this.userForm.value as User).subscribe({
           next: (res) => {
@@ -184,7 +204,6 @@ export class UsersDetailComponent implements OnInit {
             }
           }
         })
-        this.resetForms();
       })
       .catch((error) => {
         // Manejar errores si es necesario
@@ -193,6 +212,8 @@ export class UsersDetailComponent implements OnInit {
 
   }
   handdleAdd() {
+
+
     const uploadObservables = this.imagesFiles.map(file =>
       this._imageUploadService.uploadImg(file)
     );
@@ -205,7 +226,9 @@ export class UsersDetailComponent implements OnInit {
             url: res.data[0].data.link,
             deleteHash: res.data[0].data.deletehash
           };
-          this.images.push(this._fb.control(img));
+          this.userForm.patchValue({
+            avatar: img
+          })
         });
         this._userService.addUser(this.userForm.value as User).subscribe({
           next: (res) => {
