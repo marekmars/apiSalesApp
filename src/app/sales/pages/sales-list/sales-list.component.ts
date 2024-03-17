@@ -139,7 +139,7 @@ export class SalesListComponent implements OnInit, OnDestroy {
 
   getValues(desc: number, filter?: string, orderBy?: string,): void {
     // this.loading = true
-    this._salesService.getSales(this.itemsPerPage * (this.currentPage - 1), this.itemsPerPage, filter, orderBy, desc)
+    this._salesService.getSales(this.itemsPerPage * (this.currentPage - 1), this.itemsPerPage, filter, orderBy, desc, this.startDate, this.endDate)
       .subscribe((res: APIResponse<Sale>) => {
         if (res.data.length === 0) {
           this.itemsEmpty = true
@@ -149,7 +149,6 @@ export class SalesListComponent implements OnInit, OnDestroy {
           this.totalItems = res.totalCount
           this.tableItems = res.data
         }
-
       })
   }
 
@@ -210,9 +209,14 @@ export class SalesListComponent implements OnInit, OnDestroy {
   }
   setEndDate(date: Date) {
     this.endDate = date
+    console.log(this.endDate)
   }
   setStartDate(date: Date) {
     this.startDate = date
+    console.log(this.startDate)
+  }
+   filterByDate(): void {
+    this.getValues(this.sortBy.desc, this.searchValue, this.sortBy.sort)
   }
 
   ngOnDestroy(): void {

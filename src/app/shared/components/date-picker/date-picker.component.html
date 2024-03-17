@@ -4,7 +4,7 @@
   <div class="antialiased sans-serif w-full">
     <div class="mx-auto w-full">
       <div class="w-full relative">
-        <input type="text" readonly [(ngModel)]="datepickerValue" (click)="showDatepicker = !showDatepicker"
+        <input type="text" readonly [(ngModel)]="datepickerValue" (click)="showDatepicker = !showDatepicker" id="{{id}}"
           (keydown.escape)="showDatepicker = false" class="
             pl-4 pr-10 shadow-sm focus:outline-none focus:shadow-outline dark:focus:ring-green-500 dark:focus:border-green-500
             dark:text-gray-400 dark:bg-gray-800 dark:border-gray-800 w-full py-2.5 px-4 text-gray-700 text-base font-normal border border-gray-200 rounded-lg
@@ -45,8 +45,8 @@
         </div> -->
 
         <!-- Calendario -->
-        <div class="bg-gray-800 mt-14 z-50 rounded-lg shadow p-4 absolute top-0 left-0 border border-gray-700"
-          [hidden]="!showDatepicker" (keydown.away)="showDatepicker = false">
+        <div class="bg-gray-800 mt-14 z-50 rounded-lg shadow p-4 absolute top-0 left-0 border border-gray-700 min-w-64"
+          [hidden]="!showDatepicker" (keydown.away)="showDatepicker = false" #datepicker id="{{ id }}">
           <div>
             <select class="text-gray-200  border bg-gray-800 border-gray-700 rounded-md px-2 py-1" [(ngModel)]="year"
               (change)="getNoOfDays()">

@@ -13,11 +13,20 @@ import { FormsModule } from '@angular/forms';
 export class DatePickerComponent implements OnInit {
   @ViewChild('datepicker') datePicker!: ElementRef;
   @HostListener('document:click', ['$event'])
+
+
   onClick(event: Event): void {
-    if (this.datePicker &&
-      !(this.datePicker.nativeElement as HTMLElement).contains(event.target as HTMLElement)
-    ) {
-      this.showDatepicker = false;
+    const clickedInside = this.datePicker.nativeElement.contains(event.target as Node);
+
+    if (!clickedInside && this.showDatepicker && event.target instanceof HTMLElement) {
+      const clickedElementId = (event.target as HTMLElement).id;
+      console.log("Component ID:", this.id);
+      console.log("Clicked Element ID:", clickedElementId);
+
+      if (clickedElementId !== this.id) {
+        this.showDatepicker = false;
+        console.log("Clicked outside");
+      }
     }
   }
   public readonly MONTH_NAMES: string[] = [
@@ -39,12 +48,11 @@ export class DatePickerComponent implements OnInit {
   public days: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   public showDatepicker: boolean = false;
   public datepickerValue!: string;
+  public id: string = "";
   @Output() public dateEmiter = new EventEmitter<Date>();
 
   @Input() set date(date: Date) {
-    console.log("desde el input ", date);
     this.datepickerValue = date.toDateString();
-    console.log("desde el input el pickervalue", this.datepickerValue);
     this.month = date.getMonth();
     this.year = date.getFullYear();
   }
@@ -56,13 +64,15 @@ export class DatePickerComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+
+    this.id = this.generateID()
     this.getNoOfDays();
     let date = new Date(this.datepickerValue);
     this.dateEmiter.emit(date)
     this.sharedDateService.resetDate$.subscribe(() => {
       this.resetToDateToday();
     });
-    console.log('Initial datepickerValue:', this.datepickerValue);
+
   }
   prevMonth(): void {
     if (this.month === 0) {
@@ -116,7 +126,6 @@ export class DatePickerComponent implements OnInit {
     let dateSelected;
     if (this.datepickerValue === undefined) {
       dateSelected = new Date();
-      console.log("ENTRO NULL")
       return true;
     } else {
       dateSelected = new Date(this.datepickerValue);
@@ -131,11 +140,11 @@ export class DatePickerComponent implements OnInit {
     this.month = this.month; // Mantener el mes actual
     this.year = this.year; // Mantener el año actual
     let selectedDate = new Date(this.year, this.month, date);
-    console.log("getDateValue", selectedDate.toDateString())
+
     this.datepickerValue = selectedDate.toDateString();
     this.dateEmiter.emit(selectedDate);
     this.showDatepicker = false;
-    console.log('Selected date:', this.datepickerValue);
+
   }
 
   getNoOfDays() {
@@ -158,5 +167,7 @@ export class DatePickerComponent implements OnInit {
   }
 
   trackByIdentity = (index: number, item: any) => item;
-
+  generateID(): string {
+    return 'id_' + Math.random().toString(36).substr(2, 9);
+  }
 }
