@@ -1,16 +1,16 @@
-import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, HostListener, Output, ViewChild, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, Input, OnInit, Output, EventEmitter, ElementRef, ViewChild, HostListener, inject } from '@angular/core';
 import { DatePickerService } from './services/date-picker.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'shared-date-picker',
+  templateUrl: './date-picker.component.html',
+  styleUrls: ['./date-picker.component.css'],
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './date-picker.component.html',
-  styleUrl: './date-picker.component.css'
 })
-export class DatePickerComponent {
+export class DatePickerComponent implements OnInit {
   @ViewChild('datepicker') datePicker!: ElementRef;
   @HostListener('document:click', ['$event'])
   onClick(event: Event): void {
@@ -40,6 +40,14 @@ export class DatePickerComponent {
   public showDatepicker: boolean = false;
   public datepickerValue!: string;
   @Output() public dateEmiter = new EventEmitter<Date>();
+
+  @Input() set date(date: Date) {
+    console.log("desde el input ", date);
+    this.datepickerValue = date.toDateString();
+    console.log("desde el input el pickervalue", this.datepickerValue);
+    this.month = date.getMonth();
+    this.year = date.getFullYear();
+  }
   public month!: number;
   public year!: number;
   public no_of_days = [] as number[];
@@ -48,13 +56,41 @@ export class DatePickerComponent {
   constructor() { }
 
   ngOnInit(): void {
-    this.initDate();
     this.getNoOfDays();
     let date = new Date(this.datepickerValue);
     this.dateEmiter.emit(date)
     this.sharedDateService.resetDate$.subscribe(() => {
       this.resetToDateToday();
     });
+    console.log('Initial datepickerValue:', this.datepickerValue);
+  }
+  prevMonth(): void {
+    if (this.month === 0) {
+      this.month = 11;
+      this.year--;
+    } else {
+      this.month--;
+    }
+    this.getNoOfDays();
+  }
+
+  nextMonth(): void {
+    if (this.month === 11) {
+      this.month = 0;
+      this.year++;
+    } else {
+      this.month++;
+    }
+    this.getNoOfDays();
+  }
+  yearsRange(): number[] {
+    const currentYear = new Date().getFullYear();
+    const minYear = new Date(1970, 0, 1).getFullYear()
+    const years = [];
+    for (let i = minYear; i <= currentYear; i++) {
+      years.push(i);
+    }
+    return years;
   }
   resetToDateToday(): void {
     this.initDate();
@@ -62,6 +98,7 @@ export class DatePickerComponent {
     let date = new Date(this.datepickerValue);
     this.dateEmiter.emit(date);
   }
+
   initDate() {
     let today = new Date();
     this.month = today.getMonth();
@@ -74,27 +111,31 @@ export class DatePickerComponent {
       this.showDatepicker = false;
     }
   }
+
   isSelected(date: any) {
     let dateSelected;
     if (this.datepickerValue === undefined) {
       dateSelected = new Date();
+      console.log("ENTRO NULL")
       return true;
     } else {
       dateSelected = new Date(this.datepickerValue);
     }
     const d = new Date(this.year, this.month, date);
 
-
-
     return dateSelected.toDateString() === d.toDateString() ? true : false;
   }
 
   getDateValue(date: any) {
-    let selectedDate = new Date(this.year, this.month, date);
-    this.datepickerValue = selectedDate.toDateString();
 
-    this.dateEmiter.emit(selectedDate)
+    this.month = this.month; // Mantener el mes actual
+    this.year = this.year; // Mantener el año actual
+    let selectedDate = new Date(this.year, this.month, date);
+    console.log("getDateValue", selectedDate.toDateString())
+    this.datepickerValue = selectedDate.toDateString();
+    this.dateEmiter.emit(selectedDate);
     this.showDatepicker = false;
+    console.log('Selected date:', this.datepickerValue);
   }
 
   getNoOfDays() {

@@ -54,6 +54,7 @@ export class SalesDetailComponent implements OnInit {
   public notificationDescription: string = '';
 
 
+  public defaultDate: Date = new Date();
   public checkedConcepts: number[] = []; // TODO: revisar el any
   public client: Client | null = null;
   public clientName: string = '';
@@ -70,6 +71,8 @@ export class SalesDetailComponent implements OnInit {
   public submitButtonTxt: string = 'Add Sale';
 
   constructor() {
+
+
     initFlowbite();
     this.saleForm = this._fb.group({
       id: [0],
@@ -104,6 +107,7 @@ export class SalesDetailComponent implements OnInit {
           this.sale = res.data[0];
           if (this.sale) {
             this.saleForm.patchValue(this.sale);
+            this.defaultDate = new Date(this.sale.date);
             if (this.sale.concepts) {
               this.sale.concepts.forEach((concept: Concept) => {
                 this.concepts.push(this._fb.group(concept));
@@ -229,13 +233,17 @@ export class SalesDetailComponent implements OnInit {
       this.checkedConcepts = [];
     }
   }
+  // get defaultDate(): Date {
+  //   console.log("ENTRO DEFAULTDATE")
+  //   return this.sale?.date ? new Date(this.sale.date) : new Date();
+  // }
 
   handleUpdate() {
     this._saleService.updateSale(this.saleForm.value as Sale)
       .subscribe({
         next: (res) => {
           console.log(res.message);
-          if(res.success===0){
+          if (res.success === 0) {
             Swal.fire({
               title: "Error",
               text: "The sale could not be updated due to an internal server error " + res.message,
@@ -325,7 +333,7 @@ export class SalesDetailComponent implements OnInit {
     if (this.sale) {
       console.log(this.saleForm.value);
       this.handleUpdate();
-    }else{
+    } else {
       this.handleAdd();
     }
 

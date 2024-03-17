@@ -20,6 +20,7 @@ import Swal from 'sweetalert2';
 import { TableColumn, TableComponent } from "../../../shared/components/table/table.component";
 import { User } from '../../../users/interfaces/user.interfaces';
 import { AuthService } from '../../../auth/services/auth.service';
+import { DatePickerComponent } from "../../../shared/components/date-picker/date-picker.component";
 
 @Component({
   standalone: true,
@@ -31,7 +32,7 @@ import { AuthService } from '../../../auth/services/auth.service';
     SkeletonTableComponent,
     SearchBarComponent,
     SortByComponent,
-    RouterLink, TableComponent]
+    RouterLink, TableComponent, DatePickerComponent]
 })
 
 export class SalesListComponent implements OnInit, OnDestroy {
@@ -50,6 +51,8 @@ export class SalesListComponent implements OnInit, OnDestroy {
     desc: 0
   };
 
+  public startDate: Date = new Date(1970, 0, 1);
+  public endDate: Date = new Date();
   public title: string = '';
   public description: string = '';
   public okBtnTxt: string = '';
@@ -97,6 +100,8 @@ export class SalesListComponent implements OnInit, OnDestroy {
   public searchValue: string = '';
   public showDelete: boolean = false;
   ngOnInit(): void {
+
+
     this._authService.userObservable.subscribe((user) => {
       this.currentUser = user
       if (this.currentUser?.role?.name === 'Admin') {
@@ -202,6 +207,12 @@ export class SalesListComponent implements OnInit, OnDestroy {
     this.currentPage = 1
     this._paginatorService.setCurrentPage(this.currentPage)
     // this.getValues(this.sortBy.desc, this.searchValue, this.sortBy.sort)
+  }
+  setEndDate(date: Date) {
+    this.endDate = date
+  }
+  setStartDate(date: Date) {
+    this.startDate = date
   }
 
   ngOnDestroy(): void {

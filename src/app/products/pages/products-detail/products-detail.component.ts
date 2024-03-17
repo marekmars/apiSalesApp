@@ -58,9 +58,9 @@ export class ProductsDetailComponent implements OnInit {
       id: [0],
       name: ['', [Validators.required, Validators.minLength(5),]],
       description: ['', [Validators.minLength(5), Validators.maxLength(this.maxLengthTextArea)]],
-      unitaryPrice: [1, [Validators.required, Validators.min(5)]],
-      cost: [1, [Validators.required, Validators.min(5)]],
-      stock: [1, [Validators.required, Validators.min(5)]],
+      unitaryPrice: [1, [Validators.required, Validators.min(1)]],
+      cost: [1, [Validators.required, Validators.min(1)]],
+      stock: [1, [Validators.required, Validators.min(1)]],
       images: this._fb.array([]),
 
     })
@@ -214,6 +214,8 @@ export class ProductsDetailComponent implements OnInit {
           };
           this.images.push(this._fb.control(img));
         });
+
+        console.log("fin Paso 1");
         this._productService.addProduct(this.productForm.value as Product).subscribe({
           next: (res) => {
             console.log(res);
@@ -228,6 +230,7 @@ export class ProductsDetailComponent implements OnInit {
             }).then(() => {
               this._router.navigate(['/products']);
             });
+            console.log("fin Paso 1");
           },
           error: (err) => {
             console.log(Object.values(err.error.errors));
@@ -278,6 +281,14 @@ export class ProductsDetailComponent implements OnInit {
   openDialog() {
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
+
+      Object.keys(this.productForm.controls).forEach(field => {
+        const control = this.productForm.get(field);
+        if (control && control.invalid) {
+          console.log('Error en el campo:', field);
+          console.log('Errores:', control.errors);
+        }
+      });
       return
     }
     if (this.product) {

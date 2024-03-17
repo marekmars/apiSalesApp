@@ -9,19 +9,43 @@
   </svg>
 
 </a>
-<div class="flex flex-column gap-4 sm:flex-row flex-wrap  items-center content-center justify-between pb-5"
+
+<div class="flex flex-col lg:flex-row gap-2 lg:justify-between lg:mt-auto pb-5"
   [ngClass]="{'hidden': tableItems.length === 0}">
-  <shared-search-bar [placeholder]="placeholder" (searchEmiter)="search($event)"> </shared-search-bar>
-  <shared-sort-by [sortBy]="sortBy" [allowedValuesArray]="allowedValuesArray"> </shared-sort-by>
+  <div class="lg:mt-auto">
+    <shared-search-bar [placeholder]="placeholder" (searchEmiter)="search($event)"> </shared-search-bar>
+  </div>
+
+  <div class="flex flex-col lg:flex-row gap-2 lg:justify-between  lg:mt-auto  ">
+    <div class="flex flex-col  gap-1">
+      <label for="" class="pl-2 text-base font-semibold text-gray-800 dark:text-gray-400">From</label>
+      <shared-date-picker (dateEmiter)="setStartDate($event)" [date]="startDate"></shared-date-picker>
+    </div>
+    <div class="flex flex-col  gap-1">
+      <label for="" class="pl-2 text-base font-semibold text-gray-800 dark:text-gray-400">To</label>
+      <shared-date-picker (dateEmiter)="setEndDate($event)" [date]="endDate"></shared-date-picker>
+    </div>
+    <!-- <div class="flex flex-col  gap-1">
+      <label for="" class="pl-2 text-base font-semibold text-gray-800 dark:text-gray-400">To</label>
+      <shared-date-picker (dateEmiter)="setEndDate($event)"></shared-date-picker>
+    </div> -->
+    <div class="flex  mt-auto">
+      <label for="" class="text-base font-semibold text-gray-800 dark:text-gray-400"> </label>
+      <shared-sort-by [sortBy]="sortBy" [allowedValuesArray]="allowedValuesArray"> </shared-sort-by>
+    </div>
+
+  </div>
 </div>
+
+
 @if (!itemsEmpty) {
 @if (loading) {
 <shared-skeleton-table></shared-skeleton-table>
 }@else {
-<shared-table [tableTitle]="'Sales'" [tableColumns]="columns" [tableData]="tableItems" [tableRouterLink]="'sales/detail'"
-  (action)="doAction($event)" [tableShowDelete]="showDelete"></shared-table>
+<shared-table [tableTitle]="'Sales'" [tableColumns]="columns" [tableData]="tableItems"
+  [tableRouterLink]="'sales/detail'" (action)="doAction($event)" [tableShowDelete]="showDelete"></shared-table>
 }
-<shared-paginator [totalItems]="totalItems" [rowsPerPageOptions]="itemsPerPageOptions" ></shared-paginator>
+<shared-paginator [totalItems]="totalItems" [rowsPerPageOptions]="itemsPerPageOptions"></shared-paginator>
 
 }@else {
 <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
