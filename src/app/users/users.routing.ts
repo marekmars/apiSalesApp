@@ -11,6 +11,7 @@ export const usersRoutes: Routes = [
       { path: '', component: UsersListComponent },
       { path: 'add', component: UsersDetailComponent },
       { path: 'detail/:id', component: UsersDetailComponent },
+      { path: 'profile', component: UsersDetailComponent },
       { path: '**', redirectTo: '' }
     ]
   },

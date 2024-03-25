@@ -48,9 +48,9 @@ export class NavComponent {
     // }
     this.menuItems = [
       {
-        label: 'Settings',
+        label: 'Profile',
         icon: '',
-        path: '/profile'
+        path: '/users/profile'
       }
     ]
 

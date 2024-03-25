@@ -45,7 +45,8 @@ export class UsersDetailComponent implements OnInit {
   public imgLimit: number = 1;
   public roles: Role[] = []
   public rolesNames: string[] = []
-
+  public loading = true;
+  public profile=false;
   public selectedRoleName: string = '';
   public userForm: FormGroup = this._fb.group({
 
@@ -69,6 +70,8 @@ export class UsersDetailComponent implements OnInit {
 
   }
   ngOnInit(): void {
+    const currentUrl = this._router.url;
+    console.log(currentUrl)
     this._userService.getRoles().subscribe(
       (res) => {
         this.roles = res.data;
@@ -86,6 +89,16 @@ export class UsersDetailComponent implements OnInit {
         switchMap((params) => {
           if (params.hasOwnProperty('id')) {
             return this._userService.getUserById(params['id'])
+          } else if (currentUrl === '/users/profile') {
+            console.log("ENTRO")
+            const token = localStorage.getItem('token');
+            if (token) {
+              this.profile = true;
+              return this._userService.getCurrentUser(token)
+            }
+            ;
+          }else{
+            this.loading = false;
           }
           return [];
         }
@@ -99,15 +112,16 @@ export class UsersDetailComponent implements OnInit {
             this.user.password = undefined
             this.userForm.patchValue(this.user);
             this.selectedRoleName = this.user.role?.name ?? this.rolesNames[0];
-
             console.log(this.user)
             this.imageUrls = this.user?.avatar ? [this.user.avatar.url] : [];
             // this.imgLimit = this.imgLimit - this.imageUrls.length;
             this.submitButtonTxt = 'Update User';
+            this.loading = false;
           }
         }
       )
   }
+
   setRole(roleName: string) {
     const selectedRole = this.roles.find((r) => r.name === roleName);
     this.userForm.patchValue({

@@ -12,6 +12,7 @@ import { of } from 'rxjs';
   providedIn: 'root'
 })
 export class UserService {
+
   private _http: HttpClient = inject(HttpClient);
   private _url = environments.baseUrl + '/users'
   constructor() { }
@@ -44,7 +45,11 @@ export class UserService {
   public updateUser(user: User): Observable<APIResponse<User>> {
     return this._http.patch<APIResponse<User>>(this._url, user)
   }
+  public updateProfile(user: User): Observable<APIResponse<User>> {
+    return this._http.patch<APIResponse<User>>(`${this._url}/profile`, user)
+  }
   public deleteUser(id: number): Observable<APIResponse<User>> {
+    console.log("DELETE SERVICE USER ",id)
     const url = this._url + `/${id}`;
     return this._http.delete<APIResponse<User>>(url)
   }
